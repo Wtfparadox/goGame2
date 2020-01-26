@@ -1,10 +1,10 @@
 package goGUI;
 
-import boardObserver.BoardWatcher;
-import boardObserver.ObservableBoard;
 import goGame.Point;
 import goGame.PointState;
 import goGame.StoneColor;
+import observers.BoardWatcher;
+import observers.ObservableBoard;
 
 public class GTG implements BoardWatcher {
 

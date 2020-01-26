@@ -1,4 +1,4 @@
-package boardObserver;
+package observers;
 
 import goGame.Point;
 

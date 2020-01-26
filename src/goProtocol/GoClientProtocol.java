@@ -1,11 +1,19 @@
 package goProtocol;
 
+import java.io.IOException;
+
+import goExceptions.ServerUnavailableException;
+
 public interface GoClientProtocol {
 
 	/**
-	 * Send single line in the form of H;version;name;color
+	 * Client identifies itself to server. Send single line in the form of
+	 * H;version;name;color
+	 * 
+	 * @throws ServerUnavailableException
+	 * @throws IOException
 	 */
-	public void doHandshake();
+	public void doHandshake() throws ServerUnavailableException, IOException;
 
 	/**
 	 * Client sends suggested move as an integer to server in the form M;move upon
@@ -18,6 +26,8 @@ public interface GoClientProtocol {
 	/**
 	 * Client quits the game and terminates connection by sending Q to the server
 	 * 
+	 * @throws ServerUnavailableException
+	 * 
 	 */
-	public void quitGame();
+	public void quitGame() throws ServerUnavailableException;
 }

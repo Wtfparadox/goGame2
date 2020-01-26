@@ -1,6 +1,6 @@
 package goGame;
 
-public abstract class Player {
+public class Player {
 	private String name;
 	private StoneColor stone;
 

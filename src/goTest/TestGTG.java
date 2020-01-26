@@ -1,7 +1,7 @@
 package goTest;
 
-import boardObserver.ObservableBoard;
 import goGUI.GTG;
+import observers.ObservableBoard;
 
 public class TestGTG extends GTG {
 

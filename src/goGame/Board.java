@@ -3,9 +3,9 @@ package goGame;
 import java.util.ArrayList;
 import java.util.List;
 
-import boardObserver.BoardWatcher;
-import boardObserver.ObservableBoard;
 import goGUI.GTG;
+import observers.BoardWatcher;
+import observers.ObservableBoard;
 
 public class Board implements ObservableBoard {
 
