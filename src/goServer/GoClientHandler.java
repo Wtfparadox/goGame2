@@ -10,7 +10,6 @@ import goExceptions.EndOfGameException;
 import goExceptions.ExitProgram;
 import goExceptions.ServerUnavailableException;
 import goGame.Player;
-import goGame.StoneColor;
 import goProtocol.GoServerProtocol;
 import goProtocol.ProtocolMessages;
 
@@ -39,6 +38,9 @@ public class GoClientHandler implements GoServerProtocol, Runnable {
 			} catch (ExitProgram | EndOfGameException | ServerUnavailableException e) {
 				isRunning = false;
 				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 
@@ -64,7 +66,7 @@ public class GoClientHandler implements GoServerProtocol, Runnable {
 	}
 
 	@Override
-	public String startGame(StoneColor color, String board) {
+	public String startGame(char color, String board) {
 		return ProtocolMessages.GAME + ProtocolMessages.DELIMITER + board + ProtocolMessages.DELIMITER + color;
 	}
 
@@ -89,10 +91,5 @@ public class GoClientHandler implements GoServerProtocol, Runnable {
 	public String endGame(char reason, char winner, double scoreBlack, double scoreWhite) {
 		return ProtocolMessages.END + ProtocolMessages.DELIMITER + reason + ProtocolMessages.DELIMITER + winner
 				+ ProtocolMessages.DELIMITER + scoreBlack + ProtocolMessages.DELIMITER + scoreWhite;
-	}
-
-	public static void main(String[] s) {
-		GoServer server = new GoServer(new GoServerTUI());
-		new Thread(server).start();
 	}
 }

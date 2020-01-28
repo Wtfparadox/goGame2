@@ -2,12 +2,16 @@ package goGame;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.TreeSet;
 
 public class CapturedRefV2 extends Referee {
 
 	private TreeSet<Integer> fieldsToBeCaptured;
+	private TreeSet<Integer> stoneSet;
+	private TreeSet<Integer> libertySet;
+
+	private List<Integer> stonesToBeCaptured = new ArrayList<>();
+	private List<Integer> libertiesToBeCaptured = new ArrayList<>();
 	private StoneColor listColor;
 	private PointState listState;
 
@@ -15,10 +19,27 @@ public class CapturedRefV2 extends Referee {
 		super(boardArg);
 	}
 
-	public Set<Integer> getFields(int index) {
-		uniquePointsForRemoval(capturedPoints(index));
-		this.setCapturedListProperties();
-		return fieldsToBeCaptured;
+//	public Set<Integer> getFields(int index) {
+//		getAndSetStoneSet(index);
+//		getAndSetLibertySet(index);
+//		stoneSet.addAll(libertySet);
+//		fieldsToBeCaptured = stoneSet;
+//		this.setCapturedListProperties(fieldsToBeCaptured);
+//		return fieldsToBeCaptured;
+//	}
+
+	public TreeSet<Integer> getAndSetStoneSet(int index) {
+		capturedPoints(index);
+		stoneSet = uniquePointsForRemoval(stonesToBeCaptured);
+		setCapturedListProperties(stoneSet);
+		return stoneSet;
+	}
+
+	public TreeSet<Integer> getAndSetLibertySet(int index) {
+		capturedPoints(index);
+		libertySet = uniquePointsForRemoval(libertiesToBeCaptured);
+		setCapturedListProperties(libertySet);
+		return libertySet;
 	}
 
 	public StoneColor getListColor() {
@@ -29,11 +50,13 @@ public class CapturedRefV2 extends Referee {
 		return listState;
 	}
 
-	private void uniquePointsForRemoval(List<Integer> list) {
-		fieldsToBeCaptured = new TreeSet<>();
+	private TreeSet<Integer> uniquePointsForRemoval(List<Integer> list) {
+		TreeSet<Integer> set = new TreeSet<>();
+		list.size();
 		for (Integer field : list) {
-			fieldsToBeCaptured.add(field);
+			set.add(field);
 		}
+		return set;
 	}
 
 	private List<Integer> capturedPoints(int index) {
@@ -53,32 +76,42 @@ public class CapturedRefV2 extends Referee {
 	private List<Integer> findCapturedStones(int index, Point initialPoint) {
 		List<Integer> stoneChain = findCapturedFields(new StoneGroupFormer(index, initialPoint, board));
 		List<Integer> coordinates = board.getNeighborCoordinates(index);
-		List<Integer> nextChain = new ArrayList<>();
+		List<Integer> neighborStoneChain = new ArrayList<>();
+		List<Integer> neighborLibertyChain = new ArrayList<>();
 		if (stoneChain.isEmpty()) {
 			for (Integer c : coordinates) {
 				Point neighborPoint = board.getPointFromIndex(c);
-				if (!nextChain.contains(c) && neighborPoint.isFreePoint()) {
-					nextChain.addAll(findCapturedFields(new LibertyGroupFormer(c, neighborPoint, board)));
+//				System.out.println(neighborPoint.getColor() + " at coo " + c);
+				if (!neighborLibertyChain.contains(c) && neighborPoint.isFreePoint()) {
+					neighborLibertyChain.addAll(findCapturedFields(new LibertyGroupFormer(c, neighborPoint, board)));
+				} else if (!neighborPoint.isFreePoint()) {
+					neighborStoneChain.addAll(findCapturedFields(new StoneGroupFormer(c, neighborPoint, board)));
 				}
 			}
 		} else {
 			for (Integer c : coordinates) {
 				Point neighborPoint = board.getPointFromIndex(c);
-				if (!nextChain.contains(c)) {
-					nextChain.addAll(findCapturedFields(new StoneGroupFormer(c, neighborPoint, board)));
+				if (!neighborStoneChain.contains(c)) {
+					neighborStoneChain.addAll(findCapturedFields(new StoneGroupFormer(c, neighborPoint, board)));
 				}
 			}
 		}
-		if (nextChain.isEmpty()) {
+		if (stoneChain.isEmpty()) {
+			libertiesToBeCaptured = neighborLibertyChain;
+			stonesToBeCaptured = neighborStoneChain;
+			return neighborLibertyChain;
+		} else if (neighborStoneChain.isEmpty()) {
+			stonesToBeCaptured = stoneChain;
 			return stoneChain;
 		} else {
-			return nextChain;
+			stonesToBeCaptured = neighborStoneChain;
+			return neighborStoneChain;
 		}
 	}
 
-	private void setCapturedListProperties() {
-		if (!fieldsToBeCaptured.isEmpty()) {
-			Point listPoint = board.getPointFromIndex(fieldsToBeCaptured.first());
+	private void setCapturedListProperties(TreeSet<Integer> set) {
+		if (!set.isEmpty()) {
+			Point listPoint = board.getPointFromIndex(set.first());
 			StoneColor color = listPoint.getColor();
 			PointState state = listPoint.getState();
 			System.out.println(color);

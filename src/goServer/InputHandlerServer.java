@@ -26,7 +26,8 @@ public class InputHandlerServer {
 		queue = new LinkedBlockingQueue<>();
 	}
 
-	private void handleInput(String input) throws ExitProgram, EndOfGameException, ServerUnavailableException, IOException {
+	private void handleInput(String input)
+			throws ExitProgram, EndOfGameException, ServerUnavailableException, IOException {
 		String[] inputArguments = input.split(ProtocolMessages.DELIMITER);
 		if (inputArguments.length > 0) {
 			switch (input.charAt(0)) {
@@ -34,8 +35,8 @@ public class InputHandlerServer {
 				System.out.println("Handshake recieved");
 				gameController.addInputHandlerServer(this);
 				if (gameController.startGame()) {
-					char 
-					clientHandler.sendToClient(clientHandler.startGame(player.getColor(), gameController.boardToString()));
+					clientHandler.sendToClient(clientHandler.startGame(player.getColor().toString().charAt(0),
+							gameController.boardToString()));
 				}
 				break;
 			case ProtocolMessages.QUIT:
@@ -58,7 +59,7 @@ public class InputHandlerServer {
 		new Thread(new ClientReader(in, queue)).start();
 	}
 
-	public void processInput() throws ExitProgram, EndOfGameException, ServerUnavailableException {
+	public void processInput() throws ExitProgram, EndOfGameException, ServerUnavailableException, IOException {
 		try {
 			handleInput(queue.take());
 		} catch (InterruptedException e) {

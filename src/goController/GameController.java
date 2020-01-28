@@ -1,5 +1,6 @@
 package goController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import goGame.Board;
@@ -17,6 +18,7 @@ public class GameController {
 
 	public GameController() {
 		board = new Board(19);
+		clients = new ArrayList<>();
 	}
 
 	public void turnHandler(StoneColor color) {
