@@ -7,33 +7,33 @@ public interface GoServerProtocol {
 	 * 
 	 * @return H;version;(optional free message)
 	 */
-	public String respondToHandshake();
+	public String respondToHandshake(String finalVersion);
 
 	/**
 	 * When two clients have connected the server starts the game. Both clients
 	 * receive a notification: G;board;color
 	 */
-	public void startGame();
+	public String startGame(char color, String board);
 
 	/**
 	 * Give turn to client in the form: T;board;opponentsLastMove, opponentsLastMove
 	 * is either pass or null at start of game
 	 */
-	public void giveTurnToMove(String board);
+	public String giveTurnToMove(String board, int lastMove);
 
 	/**
 	 * After receiving move from client this response is sent if the move was valid
 	 * 
 	 * @return R;V;board
 	 */
-	public String validMove();
+	public String validMove(String board);
 
 	/**
 	 * After receiving move from client this response is sent if the move was valid
 	 * 
 	 * @return R;I;(optional free message)
 	 */
-	public String invalidMove();
+	public String invalidMove(String msg);
 
 	/**
 	 * The game can end for several reasons, when it does so. The server sends to
@@ -43,6 +43,6 @@ public interface GoServerProtocol {
 	 * from other client.
 	 * 
 	 */
-	public void endGame();
+	public String endGame(char reason, char winner, double scoreBlack, double scoreWhite);
 
 }

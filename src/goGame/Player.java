@@ -1,8 +1,8 @@
 package goGame;
 
-public class Player {
-	private String name;
-	private StoneColor stone;
+public abstract class Player {
+	protected String name;
+	protected StoneColor stone;
 
 	public Player(String nameArg, StoneColor stoneArg) {
 		name = nameArg;
@@ -17,8 +17,11 @@ public class Player {
 		return stone;
 	}
 
-	public void makeMove(int row, int col, Board board) {
-		board.placeStone(row, col, stone);
+	public abstract int determineMove(Board board);
+
+	public void makeMove(Board board) {
+		int index = determineMove(board);
+		board.placeStone(board.getRowFromIndex(index), board.getColFromIndex(index), stone);
 	}
 
 }

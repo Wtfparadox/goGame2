@@ -13,8 +13,9 @@ public class InputHandlerClient {
 	private GoClientTUI tui;
 	private LinkedBlockingQueue<String> queue;
 
-	public InputHandlerClient(GoClientTUI tui) {
-		queue = new LinkedBlockingQueue<String>();
+	public InputHandlerClient(GoClientTUI tuiArg) {
+		queue = new LinkedBlockingQueue<>();
+		tui = tuiArg;
 	}
 
 	private void handleInput(String input) throws ExitProgram, EndOfGameException, ServerUnavailableException {
@@ -47,6 +48,11 @@ public class InputHandlerClient {
 	}
 
 	public void processInput() throws ExitProgram, EndOfGameException, ServerUnavailableException {
-		handleInput(queue.poll());
+		try {
+			handleInput(queue.take());
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

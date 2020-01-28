@@ -18,7 +18,7 @@ class CapturedRefTest {
 	@BeforeEach
 	void setUp() throws Exception {
 
-		board = new Board(9, new TestGTG());
+		board = new Board(9);
 		ref = new CapturedRef(board);
 		b = StoneColor.BLACK;
 		w = StoneColor.WHITE;

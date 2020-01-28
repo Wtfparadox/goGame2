@@ -24,25 +24,30 @@ public class GoClient implements GoClientProtocol {
 	private BufferedReader in;
 	private BufferedWriter out;
 
-	public GoClient(GoClientTUI tuiArg) {
-		tui = tuiArg;
+	public GoClient() {
+		tui = new GoClientTUI(this);
 		ih = new InputHandlerClient(tui);
 	}
 
-	public void start() throws IOException {
+	public void start() {
 		boolean newGame = true;
 		while (newGame) {
 			try {
 				createConnection();
-				initializeReaders();
 				doHandshake();
-				ih.processInput();
+				initializeReaders();
+				while (true) {
+					ih.processInput();
+				}
 			} catch (ExitProgram e) {
 				System.out.println("The client has stopped program execution");
 			} catch (ServerUnavailableException e) {
 				System.out.println("Could not write to server");
 			} catch (EndOfGameException e) {
 				tui.getBoolean("Do you wish to play another game?");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}
@@ -103,22 +108,6 @@ public class GoClient implements GoClientProtocol {
 		}
 	}
 
-//	public String readLineFromServer() throws ServerUnavailableException {
-//		if (in != null) {
-//			try {
-//				String answer = in.readLine();
-//				if (answer == null) {
-//					throw new ServerUnavailableException("Could not read " + "from server.");
-//				}
-//				return answer;
-//			} catch (IOException e) {
-//				throw new ServerUnavailableException("Could not read " + "from server.");
-//			}
-//		} else {
-//			throw new ServerUnavailableException("Could not read " + "from server.");
-//		}
-//	}
-
 	public void sendMessage(String msg) throws ServerUnavailableException {
 		if (out != null) {
 			try {
@@ -155,6 +144,11 @@ public class GoClient implements GoClientProtocol {
 	@Override
 	public void quitGame() throws ServerUnavailableException {
 		sendMessage(Character.toString(ProtocolMessages.QUIT));
+	}
+
+	public static void main(String[] s) {
+		GoClient client = new GoClient();
+		client.start();
 	}
 
 }

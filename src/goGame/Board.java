@@ -2,22 +2,24 @@ package goGame;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-import goGUI.GTG;
 import observers.BoardWatcher;
 import observers.ObservableBoard;
 
 public class Board implements ObservableBoard {
 
+	// NEEDS REVISION
 	public int dim;
+	private int[] neighbors;
 	private Point[][] boardMatrix;
 	private List<BoardWatcher> observers = new ArrayList<BoardWatcher>();
 
-	public Board(int boardDimension, GTG gtg) {
+	public Board(int boardDimension) {
 		dim = boardDimension;
+		neighbors = new int[] { -dim, dim, 1, -1 };
 		boardMatrix = new Point[dim][dim];
 		initializeBoard();
-		addObserver(gtg);
 	}
 
 	public Point[] buildEdgeRow() {
@@ -55,9 +57,22 @@ public class Board implements ObservableBoard {
 		notifyAllObservers();
 	}
 
+	public void placeStoneFromIndex(int index, StoneColor c) {
+		placeStone(getRowFromIndex(index), getColFromIndex(index), c);
+	}
+
 	public void removeStone(List<Integer[]> removeList, StoneColor color, PointState state) {
 		for (Integer[] coordinates : removeList) {
 			Point p = boardMatrix[coordinates[0]][coordinates[1]];
+			p.setState(state);
+			p.setColor(color);
+		}
+		notifyAllObservers();
+	}
+
+	public void removeStoneFromIndex(Set<Integer> removeSet, StoneColor color, PointState state) {
+		for (Integer i : removeSet) {
+			Point p = boardMatrix[getRowFromIndex(i)][getColFromIndex(i)];
 			p.setState(state);
 			p.setColor(color);
 		}
@@ -68,8 +83,16 @@ public class Board implements ObservableBoard {
 		return row < boardMatrix.length && col < boardMatrix.length && row >= 0 && col >= 0;
 	}
 
+	public boolean validPointFromIndex(int index) {
+		return index >= 0 && index < dim * dim;
+	}
+
 	public Point getPoint(int row, int col) {
 		return boardMatrix[row][col];
+	}
+
+	public Point getPointFromIndex(int index) {
+		return boardMatrix[getRowFromIndex(index)][getColFromIndex(index)];
 	}
 
 	@Override
@@ -98,10 +121,40 @@ public class Board implements ObservableBoard {
 		return dim;
 	}
 
+	public int getRowFromIndex(int index) {
+		return index / dim;
+	}
+
+	public int getColFromIndex(int index) {
+		return index % dim;
+	}
+
+	public List<Integer> getNeighborCoordinates(int index) {
+		List<Integer> neighborCoordinates = new ArrayList<>();
+		int length = neighbors.length;
+		if (index % dim == 0) {
+			length = neighbors.length - 1;
+			neighbors[2] = 1;
+			neighbors[3] = -1;
+		} else if ((index + 1) % dim == 0) {
+			length = neighbors.length - 1;
+			neighbors[2] = -1;
+			neighbors[3] = 1;
+		}
+
+		for (int i = 0; i < length; i++) {
+			int neighborIndex = neighbors[i] + index;
+			if (validPointFromIndex(neighborIndex)) {
+				neighborCoordinates.add(neighborIndex);
+			}
+		}
+		return neighborCoordinates;
+	}
+
 	public String toString() {
-		StringBuilder boardString = new StringBuilder(boardMatrix.length * boardMatrix.length - 1);
-		for (int i = 0; i < boardMatrix.length; i++) {
-			for (int j = 0; j < boardMatrix.length; j++) {
+		StringBuilder boardString = new StringBuilder(dim * dim - 1);
+		for (int i = 0; i < dim; i++) {
+			for (int j = 0; j < dim; j++) {
 				boardString.append(pointToChar(boardMatrix[i][j]));
 			}
 		}
@@ -117,13 +170,5 @@ public class Board implements ObservableBoard {
 			return 'W';
 		}
 	}
-
-//	public static void main(String[] a) {
-//		Board board = new Board(5, new GTG(5));
-//		System.out.println(Arrays.toString(board.getBoardState()[0]));
-//		board.initializeBoardEdge(0, 0, true);
-//		System.out.println(Arrays.toString(board.getBoardState()[0]));
-//
-//	}
 
 }
