@@ -1,8 +1,6 @@
 package goGame;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.Scanner;
 
 public class HumanPlayer extends Player {
 
@@ -10,25 +8,13 @@ public class HumanPlayer extends Player {
 		super(nameArg, colorArg);
 	}
 
+	@Override
 	public int determineMove(Board board) {
-		System.out.println(this.getName() + " playing with " + this.getColor().toString() + " it's your turn.");
-		int row = 0;
-		int col = 0;
-		try {
-			row = readInput("row");
-			col = readInput("col");
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return row * board.getSize() + col;
-	}
-
-	public int readInput(String requiredVal) throws NumberFormatException, IOException {
-		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-		System.out.println("Choose " + requiredVal);
-		return Integer.parseInt(in.readLine());
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("your move please");
+		int input = scanner.nextInt();
+		board.placeStoneFromIndex(input, this.stone);
+		return input;
 	}
 
 }

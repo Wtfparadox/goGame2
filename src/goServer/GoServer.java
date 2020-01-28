@@ -50,7 +50,6 @@ public class GoServer implements Runnable {
 		while (ssock == null) {
 			int port = tui.getInt("Please enter the server port.");
 
-			// try to open a new ServerSocket
 			try {
 				tui.showMessage("Attempting to open a socket at 127.0.0.1 " + "on port " + port + "...");
 				ssock = new ServerSocket(port, 0, InetAddress.getByName("127.0.0.1"));
@@ -73,7 +72,8 @@ public class GoServer implements Runnable {
 		} else {
 			index = index - 2;
 		}
-		GoClientHandler handler = new GoClientHandler(sock, gameList.get(index));
+		GoClientHandler handler = new GoClientHandler(sock.getInputStream(), sock.getOutputStream(),
+				gameList.get(index));
 		new Thread(handler).start();
 	}
 

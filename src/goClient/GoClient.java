@@ -1,28 +1,26 @@
 package goClient;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 
 import goExceptions.EndOfGameException;
 import goExceptions.ExitProgram;
 import goExceptions.ServerUnavailableException;
-import goProtocol.GoClientProtocol;
-import goProtocol.ProtocolMessages;
 
-public class GoClient implements GoClientProtocol {
+public class GoClient {
 
 	private GoClientTUI tui;
+
 	private InputHandlerClient ih;
+	private ClientWriter writer;
+
+	private InputStream in;
+	private OutputStream out;
 
 	private Socket sock;
-
-	private BufferedReader in;
-	private BufferedWriter out;
 
 	public GoClient() {
 		tui = new GoClientTUI(this);
@@ -34,8 +32,10 @@ public class GoClient implements GoClientProtocol {
 		while (newGame) {
 			try {
 				createConnection();
-				doHandshake();
+				initializeWriter();
 				initializeReaders();
+				makeHandShake();
+
 				while (true) {
 					ih.processInput();
 				}
@@ -68,8 +68,8 @@ public class GoClient implements GoClientProtocol {
 			try {
 				System.out.println("Establishing connection on " + host + ":" + port);
 				sock = new Socket(host, port);
-				in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
-				out = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
+				in = sock.getInputStream();
+				out = sock.getOutputStream();
 				System.out.println("Connection established");
 			} catch (IOException e) {
 				System.out.println("Failed to establish connection on " + host + ":" + port);
@@ -88,10 +88,22 @@ public class GoClient implements GoClientProtocol {
 		sock = null;
 	}
 
+	private void makeHandShake() throws ServerUnavailableException, IOException {
+		int version = tui.getInt("Which protocol version do you prefer?");
+		String name = tui.getString("What is your name?");
+		String color = tui.getColor();
+		writer.doHandshake(version, name, color);
+	}
+
+	private void initializeWriter() throws IOException {
+		writer = new ClientWriter(out);
+		ih.addWriter(writer);
+	}
+
 	private void initializeReaders() {
 		try {
-			ih.startReader(System.in);
-			ih.startReader(sock.getInputStream());
+			// ih.startReader(System.in);
+			ih.startReader(in);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -106,44 +118,6 @@ public class GoClient implements GoClientProtocol {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public void sendMessage(String msg) throws ServerUnavailableException {
-		if (out != null) {
-			try {
-				out.write(msg);
-				out.newLine();
-				out.flush();
-			} catch (IOException e) {
-				System.out.println(e.getMessage());
-				throw new ServerUnavailableException("Could not write to server.");
-			}
-		} else {
-			throw new ServerUnavailableException("Could not write to server.");
-		}
-	}
-
-	@Override
-	public void doHandshake() throws ServerUnavailableException, IOException {
-		int version = tui.getInt("Which protocol version do you prefer?");
-		String name = tui.getString("What is your name?");
-		String messageForServer = ProtocolMessages.HANDSHAKE + ProtocolMessages.DELIMITER + version
-				+ ProtocolMessages.DELIMITER + name;
-		if (tui.getBoolean("Do you wish to choose a color?")) {
-			String color = tui.getColor();
-			messageForServer = messageForServer + ProtocolMessages.DELIMITER + color;
-		}
-		sendMessage(messageForServer);
-	}
-
-	@Override
-	public String doMove(int move) {
-		return ProtocolMessages.MOVE + ProtocolMessages.DELIMITER + move;
-	}
-
-	@Override
-	public void quitGame() throws ServerUnavailableException {
-		sendMessage(Character.toString(ProtocolMessages.QUIT));
 	}
 
 	public static void main(String[] s) {

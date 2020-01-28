@@ -3,6 +3,7 @@ package goGame;
 public abstract class Player {
 	protected String name;
 	protected StoneColor stone;
+	protected boolean turn;
 
 	public Player(String nameArg, StoneColor stoneArg) {
 		name = nameArg;

@@ -12,24 +12,30 @@ import goProtocol.ProtocolMessages;
 public class InputHandlerClient {
 	private GoClientTUI tui;
 	private LinkedBlockingQueue<String> queue;
+	private ClientGame game;
+	private ClientWriter writer;
 
 	public InputHandlerClient(GoClientTUI tuiArg) {
 		queue = new LinkedBlockingQueue<>();
 		tui = tuiArg;
 	}
 
-	private void handleInput(String input) throws ExitProgram, EndOfGameException, ServerUnavailableException {
+	private synchronized void handleInput(String input)
+			throws ExitProgram, EndOfGameException, ServerUnavailableException {
 		String[] inputArguments = input.split(ProtocolMessages.DELIMITER);
 		if (inputArguments.length > 0) {
 			switch (input.charAt(0)) {
 			case ProtocolMessages.QUIT:
-				// gc.quitGame();
+				writer.quitGame();
 				throw new ExitProgram("User has quit.");
 			case ProtocolMessages.GAME:
 				tui.showMessage("game start");
+				char color = inputArguments[2].charAt(0);
+				game = new ClientGame(color, this);
 				break;
 			case ProtocolMessages.TURN:
 				tui.showMessage("Its your turn!");
+				handleTurn(inputArguments[2]);
 				break;
 			case ProtocolMessages.RESULT:
 				tui.showMessage("game result");
@@ -43,8 +49,21 @@ public class InputHandlerClient {
 		}
 	}
 
+	public void handleTurn(String input) throws ServerUnavailableException {
+		if (!input.contentEquals(Character.toString(ProtocolMessages.PASS)) && input != null) {
+			int otherPlayerMove = Integer.parseInt(input);
+			game.processOpponentsMove(otherPlayerMove);
+		}
+		int ownMove = game.processOwnMove();
+		writer.doMove(ownMove);
+	}
+
 	public void startReader(InputStream in) throws IOException {
 		new Thread(new ClientReader(in, queue)).start();
+	}
+
+	public void addWriter(ClientWriter writer) {
+		this.writer = writer;
 	}
 
 	public void processInput() throws ExitProgram, EndOfGameException, ServerUnavailableException {

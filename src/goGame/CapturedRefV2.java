@@ -6,7 +6,6 @@ import java.util.TreeSet;
 
 public class CapturedRefV2 extends Referee {
 
-	private TreeSet<Integer> fieldsToBeCaptured;
 	private TreeSet<Integer> stoneSet;
 	private TreeSet<Integer> libertySet;
 
@@ -18,15 +17,6 @@ public class CapturedRefV2 extends Referee {
 	public CapturedRefV2(Board boardArg) {
 		super(boardArg);
 	}
-
-//	public Set<Integer> getFields(int index) {
-//		getAndSetStoneSet(index);
-//		getAndSetLibertySet(index);
-//		stoneSet.addAll(libertySet);
-//		fieldsToBeCaptured = stoneSet;
-//		this.setCapturedListProperties(fieldsToBeCaptured);
-//		return fieldsToBeCaptured;
-//	}
 
 	public TreeSet<Integer> getAndSetStoneSet(int index) {
 		capturedPoints(index);

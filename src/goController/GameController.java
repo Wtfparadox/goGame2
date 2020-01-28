@@ -1,13 +1,16 @@
 package goController;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import goExceptions.ClientUnavailableException;
 import goGame.Board;
 import goGame.Point;
 import goGame.PointState;
 import goGame.ServerPlayer;
 import goGame.StoneColor;
+import goProtocol.ProtocolMessages;
 import goServer.InputHandlerServer;
 
 public class GameController {
@@ -21,26 +24,45 @@ public class GameController {
 		clients = new ArrayList<>();
 	}
 
-	public void turnHandler(StoneColor color) {
-
-	}
-
-	private boolean isValidMove(int move) {
-		return false;
-	}
-
-	public boolean startGame() {
-		if (clients.size() == 2) {
-			clients.get(0).setPlayer(new ServerPlayer("Player 1", StoneColor.BLACK));
-			clients.get(1).setPlayer(new ServerPlayer("Player 2", StoneColor.WHITE));
-			return true;
+	public boolean moveHandler(StoneColor color, int index) throws IOException, ClientUnavailableException {
+		if (isValidMove(index)) {
+			try {
+				board.placeStoneFromIndex(index, color);
+				return true;
+			} finally {
+				manageTurn(String.valueOf(index));
+			}
 		} else {
 			return false;
 		}
 	}
 
-	public void addInputHandlerServer(InputHandlerServer ihs) {
-		clients.add(ihs);
+	private void manageTurn(String lastMove) throws ClientUnavailableException {
+		whiteTurn ^= true;
+		if (whiteTurn) {
+			clients.get(1).notifyTurn(lastMove);
+		} else {
+			clients.get(0).notifyTurn(lastMove);
+		}
+	}
+
+	private boolean isValidMove(int move) {
+		return board.validPointFromIndex(move);
+	}
+
+	public void readyForGame() throws IOException, ClientUnavailableException {
+		if (clients.size() == 2) {
+			clients.get(0).setPlayer(new ServerPlayer("Player 1", StoneColor.BLACK));
+			clients.get(1).setPlayer(new ServerPlayer("Player 2", StoneColor.WHITE));
+			for (InputHandlerServer client : clients) {
+				client.beginGame();
+			}
+			manageTurn(Character.toString(ProtocolMessages.PASS));
+		}
+	}
+
+	public void addInputHandler(InputHandlerServer handler) {
+		clients.add(handler);
 	}
 
 	public String boardToString() {

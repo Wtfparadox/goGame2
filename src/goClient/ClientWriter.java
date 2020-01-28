@@ -2,8 +2,8 @@ package goClient;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.net.Socket;
 
 import goExceptions.ServerUnavailableException;
 import goProtocol.GoClientProtocol;
@@ -13,8 +13,8 @@ public class ClientWriter implements GoClientProtocol {
 
 	private BufferedWriter out;
 
-	public ClientWriter(Socket sock) throws IOException {
-		out = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
+	public ClientWriter(OutputStream out) throws IOException {
+		this.out = new BufferedWriter(new OutputStreamWriter(out));
 	}
 
 	public void sendMessage(String msg) throws ServerUnavailableException {
@@ -33,14 +33,15 @@ public class ClientWriter implements GoClientProtocol {
 	}
 
 	@Override
-	public void doHandshake(String version, String name, char color) throws ServerUnavailableException {
-		sendMessage(ProtocolMessages.HANDSHAKE + ProtocolMessages.DELIMITER + version + ProtocolMessages.DELIMITER
-				+ name + ProtocolMessages.DELIMITER + color);
+	public void doHandshake(int version, String name, String color) throws ServerUnavailableException, IOException {
+		String messageForServer = ProtocolMessages.HANDSHAKE + ProtocolMessages.DELIMITER + version
+				+ ProtocolMessages.DELIMITER + name + ProtocolMessages.DELIMITER + color;
+		sendMessage(messageForServer);
 	}
 
 	@Override
-	public String doMove(int move) {
-		return ProtocolMessages.MOVE + ProtocolMessages.DELIMITER + move;
+	public void doMove(int move) throws ServerUnavailableException {
+		sendMessage(ProtocolMessages.MOVE + ProtocolMessages.DELIMITER + move);
 	}
 
 	@Override
