@@ -1,32 +1,31 @@
 package goClient;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.Queue;
 
-public class ClientReader implements Runnable {
+public class ClientReader extends Reader {
 
-	private BufferedReader in;
-	private LinkedBlockingQueue<String> queue;
-
-	public ClientReader(InputStream input, LinkedBlockingQueue<String> clq) throws IOException {
-		in = new BufferedReader(new InputStreamReader(input));
-		queue = clq;
+	public ClientReader(InputStream in, Queue<String> queue) {
+		super(in, queue);
 	}
 
 	@Override
 	public void run() {
 		while (true) {
-			String incomingMessage = "";
-			try {
-				incomingMessage = in.readLine();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			queue.add(incomingMessage);
+			queue.add(readMessage());
 		}
+	}
+
+	@Override
+	public String readMessage() {
+		String incomingMessage = "";
+		try {
+			incomingMessage = in.readLine();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return incomingMessage;
 	}
 
 }

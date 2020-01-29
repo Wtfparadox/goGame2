@@ -1,5 +1,6 @@
 package goGame;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import goExceptions.FormerBoardException;
@@ -9,6 +10,7 @@ public class BoardRef extends Referee {
 
 	public BoardRef(Board boardArg) {
 		super(boardArg);
+		playedBoards = new ArrayList<>();
 	}
 
 	private boolean isNewBoard(String boardString) {

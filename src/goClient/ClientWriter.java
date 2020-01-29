@@ -40,7 +40,7 @@ public class ClientWriter implements GoClientProtocol {
 	}
 
 	@Override
-	public void doMove(int move) throws ServerUnavailableException {
+	public void doMove(String move) throws ServerUnavailableException {
 		sendMessage(ProtocolMessages.MOVE + ProtocolMessages.DELIMITER + move);
 	}
 

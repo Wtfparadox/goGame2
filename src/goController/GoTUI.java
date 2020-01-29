@@ -6,7 +6,7 @@ import java.util.TreeSet;
 
 import goGUI.GTG;
 import goGame.Board;
-import goGame.CapturedRefV2;
+import goGame.CaptureReferee;
 import goGame.Player;
 import goGame.PointState;
 import goGame.ServerPlayer;
@@ -17,7 +17,7 @@ public class GoTUI implements Runnable {
 	private Player[] players;
 	private BufferedReader in;
 	private Board board;
-	private CapturedRefV2 ref;
+	private CaptureReferee ref;
 
 	public GoTUI(GTG gtg, Player p1, Player p2) {
 		this.gtg = gtg;
@@ -27,7 +27,7 @@ public class GoTUI implements Runnable {
 		in = new BufferedReader(new InputStreamReader(System.in));
 		this.board = new Board(5);
 		board.addObserver(this.gtg);
-		ref = new CapturedRefV2(board);
+		ref = new CaptureReferee(board);
 	}
 
 	public void run() {

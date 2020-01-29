@@ -23,7 +23,7 @@ public interface GoClientProtocol {
 	 * 
 	 * @throws ServerUnavailableException
 	 */
-	public void doMove(int move) throws ServerUnavailableException;
+	public void doMove(String move) throws ServerUnavailableException;
 
 	/**
 	 * Client quits the game and terminates connection by sending Q to the server

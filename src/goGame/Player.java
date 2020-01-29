@@ -1,5 +1,7 @@
 package goGame;
 
+import goExceptions.ServerUnavailableException;
+
 public abstract class Player {
 	protected String name;
 	protected StoneColor stone;
@@ -20,8 +22,10 @@ public abstract class Player {
 
 	public abstract int determineMove(Board board);
 
-	public void makeMove(Board board) {
-		int index = determineMove(board);
+	public abstract int handleTurn(Board board) throws ServerUnavailableException;
+
+	public void makeMove(Board board) throws ServerUnavailableException {
+		int index = handleTurn(board);
 		board.placeStone(board.getRowFromIndex(index), board.getColFromIndex(index), stone);
 	}
 

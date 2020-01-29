@@ -10,6 +10,7 @@ import goController.GameController;
 import goExceptions.ClientUnavailableException;
 import goExceptions.EndOfGameException;
 import goExceptions.ExitProgram;
+import goExceptions.FormerBoardException;
 import goGame.Player;
 import goProtocol.ProtocolMessages;
 
@@ -43,8 +44,7 @@ public class InputHandlerServer {
 				break;
 			case ProtocolMessages.MOVE:
 				System.out.println("Move received");
-				int move = Integer.parseInt(inputArguments[1]);
-				handleMove(move);
+				handleTurn(inputArguments[1]);
 				break;
 			}
 		} else {
@@ -52,12 +52,51 @@ public class InputHandlerServer {
 		}
 	}
 
-	public void handleMove(int move) throws IOException, EndOfGameException, ClientUnavailableException {
-		if (controller.moveHandler(player.getColor(), move)) {
-			writer.validMove(controller.boardToString());
+	private void handleTurn(String move) throws IOException, EndOfGameException, ClientUnavailableException {
+		if (validateMove(move)) {
+			controller.setCurrentMove(move);
+			if (!controller.gameOver()) {
+				makeMove(move);
+				writer.validMove(controller.boardToString());
+			} else {
+				writer.endGame(ProtocolMessages.FINISHED, ProtocolMessages.BLACK, 1.0, 1.0);
+				throw new EndOfGameException("Two passes");
+			}
 		} else {
-			writer.invalidMove("Your move is invalid");
+			writer.invalidMove("Your move does not correspond to an existing field on the Go board.");
 			throw new EndOfGameException("Cheated");
+		}
+	}
+
+	private boolean validateMove(String move) throws IOException, EndOfGameException, ClientUnavailableException {
+		if (!move.contentEquals("P") && !isInteger(move)) {
+			return false;
+		} else if (isInteger(move)) {
+			return controller.isValidMove(Integer.parseInt(move));
+		} else {
+			return true;
+		}
+	}
+
+	private void makeMove(String move) throws IOException, ClientUnavailableException, EndOfGameException {
+		if (isInteger(move)) {
+			try {
+				controller.doBoardMove(player.getColor(), move);
+			} catch (FormerBoardException e) {
+				writer.invalidMove("This board configuration has been played already");
+				throw new EndOfGameException("Cheated");
+			}
+		} else {
+			controller.doPassMove();
+		}
+	}
+
+	private boolean isInteger(String input) {
+		try {
+			Integer.parseInt(input);
+			return true;
+		} catch (NumberFormatException e) {
+			return false;
 		}
 	}
 

@@ -103,7 +103,7 @@ public class GoClient {
 	private void initializeReaders() {
 		try {
 			// ih.startReader(System.in);
-			ih.startReader(in);
+			ih.startReader(new ClientReader(in, ih.getQueue()));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

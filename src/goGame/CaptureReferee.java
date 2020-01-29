@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 
-public class CapturedRefV2 extends Referee {
+public class CaptureReferee extends Referee {
 
 	private TreeSet<Integer> stoneSet;
 	private TreeSet<Integer> libertySet;
@@ -14,7 +14,7 @@ public class CapturedRefV2 extends Referee {
 	private StoneColor listColor;
 	private PointState listState;
 
-	public CapturedRefV2(Board boardArg) {
+	public CaptureReferee(Board boardArg) {
 		super(boardArg);
 	}
 
@@ -104,8 +104,6 @@ public class CapturedRefV2 extends Referee {
 			Point listPoint = board.getPointFromIndex(set.first());
 			StoneColor color = listPoint.getColor();
 			PointState state = listPoint.getState();
-			System.out.println(color);
-			System.out.println(state);
 			if (state == PointState.CONQUERED) {
 				listColor = StoneColor.NONE;
 				listState = PointState.FREE;

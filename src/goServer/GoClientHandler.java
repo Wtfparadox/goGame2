@@ -22,8 +22,8 @@ public class GoClientHandler implements Runnable {
 	@Override
 	public void run() {
 		boolean isRunning = true;
+		initializeReaders();
 		while (isRunning) {
-			initializeReaders();
 			try {
 				ihs.processInput();
 			} catch (ExitProgram | EndOfGameException e) {

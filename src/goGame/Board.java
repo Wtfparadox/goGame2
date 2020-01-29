@@ -22,6 +22,22 @@ public class Board implements ObservableBoard {
 		initializeBoard();
 	}
 
+	public Board(Board board) {
+		dim = board.dim;
+		neighbors = board.neighbors;
+		boardMatrix = new Point[dim][dim];
+		for (int i = 0; i < dim; i++) {
+			for (int j = 0; j < dim; j++) {
+				boardMatrix[i][j] = board.getPoint(i, j);
+			}
+		}
+	}
+
+	public Board deepCopy(Board board) {
+		Board copyBoard = new Board(this);
+		return copyBoard;
+	}
+
 	public Point[] buildEdgeRow() {
 		Point[] edge = new Point[boardMatrix.length];
 		for (int a = 0; a < boardMatrix.length; a++) {

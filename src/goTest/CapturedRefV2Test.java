@@ -6,11 +6,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import goGame.Board;
-import goGame.CapturedRefV2;
+import goGame.CaptureReferee;
 import goGame.StoneColor;
 
 class CapturedRefV2Test {
-	private CapturedRefV2 ref;
+	private CaptureReferee ref;
 	private Board board;
 	private StoneColor b;
 	private StoneColor w;
@@ -20,7 +20,7 @@ class CapturedRefV2Test {
 	void setUp() throws Exception {
 		dim = 5;
 		board = new Board(dim);
-		ref = new CapturedRefV2(board);
+		ref = new CaptureReferee(board);
 		b = StoneColor.BLACK;
 		w = StoneColor.WHITE;
 	}
