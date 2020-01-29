@@ -5,6 +5,7 @@ import java.util.TreeSet;
 import goBoard.Board;
 import goBoard.PointState;
 import goBoard.StoneColor;
+import goExceptions.ConnectionLostException;
 import goGUI.GTG;
 import goPlayers.Player;
 import goPlayers.ServerPlayer;
@@ -30,7 +31,13 @@ public class LocalGameTester implements Runnable {
 		int i = 0;
 		while (true) {
 			Player p = players[i % 2];
-			int index = p.determineMove(board);
+			int index = 0;
+			try {
+				index = p.handleTurn(board);
+			} catch (ConnectionLostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			processMove(index);
 			i++;
 		}

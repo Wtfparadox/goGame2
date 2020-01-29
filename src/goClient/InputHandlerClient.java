@@ -6,7 +6,6 @@ import java.io.OutputStream;
 import goBoard.StoneColor;
 import goExceptions.ConnectionLostException;
 import goExceptions.EndOfGameException;
-import goExceptions.ExitProgram;
 import goGame.ClientGame;
 import goPlayers.HumanPlayer;
 import goProtocol.ProtocolMessages;
@@ -24,14 +23,10 @@ public class InputHandlerClient extends InputHandler {
 	}
 
 	@Override
-	protected void handleInput(String input)
-			throws ExitProgram, EndOfGameException, IOException, ConnectionLostException {
+	protected void handleInput(String input) throws EndOfGameException, IOException, ConnectionLostException {
 		String[] inputArguments = input.split(ProtocolMessages.DELIMITER);
 		if (inputArguments.length > 0) {
 			switch (input.charAt(0)) {
-			case ProtocolMessages.QUIT:
-				writer.quitGame();
-				throw new ExitProgram("User has quit.");
 			case ProtocolMessages.GAME:
 				tui.showMessage("game start");
 				char color = inputArguments[2].charAt(0);

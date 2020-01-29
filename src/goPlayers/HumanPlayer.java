@@ -20,9 +20,7 @@ public class HumanPlayer extends Player {
 		this.writer = writer;
 	}
 
-	@Override
-	public int determineMove(Board board) {
-		System.out.println("Where do you want to place your stone?");
+	public int determineMove() {
 		int move = reader.readInteger();
 		return move;
 	}
@@ -41,7 +39,7 @@ public class HumanPlayer extends Player {
 			writer.doMove(Character.toString(ProtocolMessages.PASS));
 			return -1;
 		case ProtocolMessages.MOVE:
-			int turn = determineMove(board);
+			int turn = determineMove();
 			writer.doMove(String.valueOf(turn));
 			return turn;
 		default:

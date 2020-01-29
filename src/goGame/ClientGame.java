@@ -37,10 +37,10 @@ public class ClientGame extends Game {
 		processMove(otherPlayerMove);
 	}
 
-	public int processOwnMove() {
-		int ownMove = player.determineMove(board);
-		board.placeStoneFromIndex(ownMove, player.getColor());
-		return ownMove;
-	}
+//	public int processOwnMove() {
+//		int ownMove = player.determineMove(board);
+//		board.placeStoneFromIndex(ownMove, player.getColor());
+//		return ownMove;
+//	}
 
 }

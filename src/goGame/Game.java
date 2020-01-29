@@ -22,7 +22,7 @@ public abstract class Game {
 		boardReferee = new BoardRef(board);
 	}
 
-	protected void checkBoardConfiguration(int move, StoneColor color) throws FormerBoardException {
+	protected void updateBoardConfiguration(int move, StoneColor color) throws FormerBoardException {
 		Board copyBoard = board.deepCopy(board);
 		copyBoard.placeStoneFromIndex(move, color);
 		processMove(move);
