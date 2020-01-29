@@ -8,8 +8,8 @@ public class StoneGroupFormer extends GroupFormer {
 	private boolean[] isVisited;
 	private boolean hasFreePoint;
 
-	public StoneGroupFormer(int boardIndex, Point initialStone, Board board) {
-		super(boardIndex, initialStone, board);
+	public StoneGroupFormer(int boardIndex, Board board) {
+		super(boardIndex, board);
 		isVisited = new boolean[board.getSize() * board.getSize()];
 	}
 

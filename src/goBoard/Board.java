@@ -2,7 +2,6 @@ package goBoard;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import observers.BoardWatcher;
 import observers.ObservableBoard;
@@ -86,8 +85,8 @@ public class Board implements ObservableBoard {
 		notifyAllObservers();
 	}
 
-	public void removeStoneFromIndex(Set<Integer> removeSet, StoneColor color, PointState state) {
-		for (Integer i : removeSet) {
+	public void removeStoneFromIndex(List<Integer> removeList, StoneColor color, PointState state) {
+		for (Integer i : removeList) {
 			Point p = boardMatrix[getRowFromIndex(i)][getColFromIndex(i)];
 			p.setState(state);
 			p.setColor(color);

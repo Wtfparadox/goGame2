@@ -16,11 +16,11 @@ public abstract class GroupFormer {
 	protected Point initialPoint;
 	protected int index;
 
-	public GroupFormer(int boardIndex, Point initialPoint, Board board) {
+	public GroupFormer(int boardIndex, Board board) {
 		pointGroup = new ArrayList<>();
 		this.board = board;
-		this.initialPoint = initialPoint;
 		index = boardIndex;
+		initialPoint = board.getPointFromIndex(index);
 	}
 
 	public abstract void formGroup(int index);

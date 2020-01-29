@@ -1,7 +1,5 @@
 package goGame;
 
-import java.util.TreeSet;
-
 import goBoard.Board;
 import goBoard.BoardRef;
 import goBoard.Point;
@@ -43,25 +41,11 @@ public abstract class Game {
 	}
 
 	protected void processMove(int index) {
-		TreeSet<Integer> set1 = capturedFields.getAndSetLibertySet(index);
-		if (!set1.isEmpty()) {
-			StoneColor color = capturedFields.getListColor();
-			PointState state = capturedFields.getListState();
-			if (state == PointState.CONQUERED && color == StoneColor.NONE) {
-				color = board.getPointFromIndex(index).getColor();
-			}
-			board.removeStoneFromIndex(set1, color, state);
-		}
-		TreeSet<Integer> set2 = capturedFields.getAndSetStoneSet(index);
-		if (!set2.isEmpty()) {
-			StoneColor color = capturedFields.getListColor();
-			PointState state = capturedFields.getListState();
-			if (state == PointState.CONQUERED && color == StoneColor.NONE) {
-				System.out.println("reached");
-				color = board.getPointFromIndex(index).getColor();
-			}
-			board.removeStoneFromIndex(set2, color, state);
-		}
+		capturedFields.markPointsForRemoval(index);
+		board.removeStoneFromIndex(capturedFields.getStoneList(index), capturedFields.getListColor(),
+				capturedFields.getListState());
+		board.removeStoneFromIndex(capturedFields.getLibertyList(index), capturedFields.getListColor(),
+				capturedFields.getListState());
 	}
 
 	public String boardToString() {

@@ -57,10 +57,11 @@ public class InputHandlerClient extends InputHandler {
 	}
 
 	public void makeHandShake() throws IOException, ConnectionLostException {
-		int version = tui.getInt("Which protocol version do you prefer?");
-		String name = tui.getString("What is your name?");
-		String color = tui.getColor();
-		writer.doHandshake(version, name, color);
+//		int version = tui.getInt("Which protocol version do you prefer?");
+//		String name = tui.getString("What is your name?");
+//		String color = tui.getColor();
+//		writer.doHandshake(version, name, color);
+		writer.doHandshake(1, "w", "w");
 	}
 
 	private StoneColor stringToStoneColor(char color) {

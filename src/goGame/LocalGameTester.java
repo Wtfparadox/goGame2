@@ -1,9 +1,6 @@
 package goGame;
 
-import java.util.TreeSet;
-
 import goBoard.Board;
-import goBoard.PointState;
 import goBoard.StoneColor;
 import goExceptions.ConnectionLostException;
 import goGUI.GTG;
@@ -44,29 +41,8 @@ public class LocalGameTester implements Runnable {
 	}
 
 	private void processMove(int index) {
-		TreeSet<Integer> set1 = ref.getAndSetLibertySet(index);
-		for (Integer i : set1) {
-			System.out.println(board.getPointFromIndex(i).getColor());
-			System.out.println(i);
-		}
-		if (!set1.isEmpty()) {
-			StoneColor color = ref.getListColor();
-			PointState state = ref.getListState();
-			if (state == PointState.CONQUERED && color == StoneColor.NONE) {
-				color = board.getPointFromIndex(index).getColor();
-			}
-			board.removeStoneFromIndex(set1, color, state);
-		}
-		TreeSet<Integer> set2 = ref.getAndSetStoneSet(index);
-		if (!set2.isEmpty()) {
-			StoneColor color = ref.getListColor();
-			PointState state = ref.getListState();
-			if (state == PointState.CONQUERED && color == StoneColor.NONE) {
-				System.out.println("reached");
-				color = board.getPointFromIndex(index).getColor();
-			}
-			board.removeStoneFromIndex(set2, color, state);
-		}
+		board.removeStoneFromIndex(ref.getStoneList(index), ref.getListColor(), ref.getListState());
+		board.removeStoneFromIndex(ref.getLibertyList(index), ref.getListColor(), ref.getListState());
 	}
 
 	private void boardAttempt() {

@@ -48,7 +48,7 @@ public class GoServer implements Runnable {
 
 		ssock = null;
 		while (ssock == null) {
-			int port = tui.getInt("Please enter the server port.");
+			int port = 8888;// tui.getInt("Please enter the server port.");
 
 			try {
 				tui.showMessage("Attempting to open a socket at 127.0.0.1 " + "on port " + port + "...");

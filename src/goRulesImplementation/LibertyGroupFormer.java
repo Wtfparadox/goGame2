@@ -12,8 +12,8 @@ public class LibertyGroupFormer extends GroupFormer {
 	private boolean[] isVisited;
 	private Set<StoneColor> colorSet;
 
-	public LibertyGroupFormer(int boardIndex, Point initialPoint, Board board) {
-		super(boardIndex, initialPoint, board);
+	public LibertyGroupFormer(int boardIndex, Board board) {
+		super(boardIndex, board);
 		isVisited = new boolean[board.getSize() * board.getSize()];
 		colorSet = new HashSet<>();
 	}

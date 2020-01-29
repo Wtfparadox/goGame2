@@ -8,7 +8,6 @@ import goExceptions.EndOfGameException;
 import goExceptions.ExitProgram;
 import goExceptions.FormerBoardException;
 import goGame.ServerGame;
-import goPlayers.Player;
 import goProtocol.ProtocolMessages;
 import goServerClientCommunication.InputHandler;
 
@@ -16,8 +15,6 @@ public class InputHandlerServer extends InputHandler {
 	// private GoClientTUI tui;
 	private ServerGame controller;
 	private ServerWriter writer;
-
-	private Player player;
 
 	public InputHandlerServer(ServerGame gc, OutputStream out) { // GoClientTUI tuiArg
 		controller = gc;

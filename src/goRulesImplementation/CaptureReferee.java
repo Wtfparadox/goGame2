@@ -2,7 +2,6 @@ package goRulesImplementation;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeSet;
 
 import goBoard.Board;
 import goBoard.Point;
@@ -10,9 +9,6 @@ import goBoard.PointState;
 import goBoard.StoneColor;
 
 public class CaptureReferee extends Referee {
-
-	private TreeSet<Integer> stoneSet;
-	private TreeSet<Integer> libertySet;
 
 	private List<Integer> stonesToBeCaptured = new ArrayList<>();
 	private List<Integer> libertiesToBeCaptured = new ArrayList<>();
@@ -23,18 +19,24 @@ public class CaptureReferee extends Referee {
 		super(boardArg);
 	}
 
-	public TreeSet<Integer> getAndSetStoneSet(int index) {
-		capturedPoints(index);
-		stoneSet = uniquePointsForRemoval(stonesToBeCaptured);
-		setCapturedListProperties(stoneSet);
-		return stoneSet;
+	public List<Integer> getStoneList(int startPoint) {
+		setCapturedListProperties(stonesToBeCaptured, startPoint);
+		return stonesToBeCaptured;
 	}
 
-	public TreeSet<Integer> getAndSetLibertySet(int index) {
+	public List<Integer> getLibertyList(int startPoint) {
+		setCapturedListProperties(libertiesToBeCaptured, startPoint);
+		return libertiesToBeCaptured;
+	}
+
+	public void markPointsForRemoval(int index) {
+		clearLists();
 		capturedPoints(index);
-		libertySet = uniquePointsForRemoval(libertiesToBeCaptured);
-		setCapturedListProperties(libertySet);
-		return libertySet;
+	}
+
+	public void clearLists() {
+		stonesToBeCaptured.clear();
+		libertiesToBeCaptured.clear();
 	}
 
 	public StoneColor getListColor() {
@@ -45,21 +47,12 @@ public class CaptureReferee extends Referee {
 		return listState;
 	}
 
-	private TreeSet<Integer> uniquePointsForRemoval(List<Integer> list) {
-		TreeSet<Integer> set = new TreeSet<>();
-		list.size();
-		for (Integer field : list) {
-			set.add(field);
-		}
-		return set;
-	}
-
-	private List<Integer> capturedPoints(int index) {
-		Point initialPoint = board.getPointFromIndex(index);
-		if (initialPoint.isFreePoint()) {
-			return findCapturedFields(new LibertyGroupFormer(index, initialPoint, board));
+	private void capturedPoints(int index) {
+		Point startingPointGroupFormation = board.getPointFromIndex(index);
+		if (startingPointGroupFormation.isFreePoint()) {
+			findCapturedFields(new LibertyGroupFormer(index, board));
 		} else {
-			return findCapturedStones(index, initialPoint);
+			findCapturedStones(index, startingPointGroupFormation);
 		}
 	}
 
@@ -68,45 +61,39 @@ public class CaptureReferee extends Referee {
 		return group.getGroup();
 	}
 
-	private List<Integer> findCapturedStones(int index, Point initialPoint) {
-		List<Integer> stoneChain = findCapturedFields(new StoneGroupFormer(index, initialPoint, board));
+	private void findCapturedStones(int index, Point initialPoint) {
+		List<Integer> stoneChain = findCapturedFields(new StoneGroupFormer(index, board));
 		List<Integer> coordinates = board.getNeighborCoordinates(index);
 		List<Integer> neighborStoneChain = new ArrayList<>();
-		List<Integer> neighborLibertyChain = new ArrayList<>();
+
 		if (stoneChain.isEmpty()) {
 			for (Integer c : coordinates) {
-				Point neighborPoint = board.getPointFromIndex(c);
-//				System.out.println(neighborPoint.getColor() + " at coo " + c);
-				if (!neighborLibertyChain.contains(c) && neighborPoint.isFreePoint()) {
-					neighborLibertyChain.addAll(findCapturedFields(new LibertyGroupFormer(c, neighborPoint, board)));
-				} else if (!neighborPoint.isFreePoint()) {
-					neighborStoneChain.addAll(findCapturedFields(new StoneGroupFormer(c, neighborPoint, board)));
+				if (!libertiesToBeCaptured.contains(c) && board.getPointFromIndex(c).isFreePoint()) {
+					libertiesToBeCaptured.addAll(findCapturedFields(new LibertyGroupFormer(c, board)));
+				} else if (!board.getPointFromIndex(c).isFreePoint()) {
+					neighborStoneChain.addAll(findCapturedFields(new StoneGroupFormer(c, board)));
 				}
 			}
 		} else {
 			for (Integer c : coordinates) {
-				Point neighborPoint = board.getPointFromIndex(c);
 				if (!neighborStoneChain.contains(c)) {
-					neighborStoneChain.addAll(findCapturedFields(new StoneGroupFormer(c, neighborPoint, board)));
+					neighborStoneChain.addAll(findCapturedFields(new StoneGroupFormer(c, board)));
 				}
 			}
 		}
+
 		if (stoneChain.isEmpty()) {
-			libertiesToBeCaptured = neighborLibertyChain;
 			stonesToBeCaptured = neighborStoneChain;
-			return neighborLibertyChain;
 		} else if (neighborStoneChain.isEmpty()) {
 			stonesToBeCaptured = stoneChain;
-			return stoneChain;
 		} else {
 			stonesToBeCaptured = neighborStoneChain;
-			return neighborStoneChain;
 		}
 	}
 
-	private void setCapturedListProperties(TreeSet<Integer> set) {
-		if (!set.isEmpty()) {
-			Point listPoint = board.getPointFromIndex(set.first());
+	private void setCapturedListProperties(List<Integer> list, int index) {
+		if (!list.isEmpty()) {
+			Point listPoint = board.getPointFromIndex(list.get(0));
 			StoneColor color = listPoint.getColor();
 			PointState state = listPoint.getState();
 			if (state == PointState.CONQUERED) {
@@ -116,7 +103,7 @@ public class CaptureReferee extends Referee {
 				listColor = color.other();
 				listState = PointState.CONQUERED;
 			} else {
-				listColor = StoneColor.NONE;
+				listColor = board.getPointFromIndex(index).getColor();
 				listState = PointState.CONQUERED;
 			}
 

@@ -37,7 +37,7 @@ class GroupTest {
 		board.placeStone(2, 0, b);
 		board.placeStone(1, 1, b);
 
-		group = new StoneGroupFormer(0, board.getPoint(0, 0), board);
+		group = new StoneGroupFormer(0, board);
 		group.formGroup(0);
 		assertEquals(group.getGroup().size(), 3);
 
@@ -62,7 +62,7 @@ class GroupTest {
 		board.placeStone(3, 4, w);
 		board.placeStone(4, 4, w);
 
-		group = new StoneGroupFormer(2 * dim + 2, board.getPoint(2, 2), board);
+		group = new StoneGroupFormer(2 * dim + 2, board);
 		group.formGroup(2 * dim + 2);
 		assertEquals(group.getGroup().size(), 0);
 	}
@@ -80,14 +80,14 @@ class GroupTest {
 		board.placeStoneFromIndex(12, b);
 		board.placeStoneFromIndex(13, b);
 
-		group = new StoneGroupFormer(5, board.getPointFromIndex(5), board);
+		group = new StoneGroupFormer(5, board);
 		group.formGroup(5);
 		assertEquals(group.getGroup().size(), 0);
 
-		group = new LibertyGroupFormer(6, board.getPointFromIndex(6), board);
+		group = new LibertyGroupFormer(6, board);
 		group.formGroup(6);
 		assertEquals(group.getGroup().size(), 2);
-		group = new LibertyGroupFormer(24, board.getPointFromIndex(24), board);
+		group = new LibertyGroupFormer(24, board);
 		group.formGroup(24);
 		assertEquals(group.getGroup().size(), 13);
 	}
@@ -107,14 +107,14 @@ class GroupTest {
 
 		board.placeStoneFromIndex(20, w);
 
-		group = new StoneGroupFormer(5, board.getPointFromIndex(5), board);
+		group = new StoneGroupFormer(5, board);
 		group.formGroup(5);
 		assertEquals(group.getGroup().size(), 0);
 
-		group = new LibertyGroupFormer(6, board.getPointFromIndex(6), board);
+		group = new LibertyGroupFormer(6, board);
 		group.formGroup(6);
 		assertEquals(group.getGroup().size(), 2);
-		group = new LibertyGroupFormer(24, board.getPointFromIndex(24), board);
+		group = new LibertyGroupFormer(24, board);
 		group.formGroup(24);
 		assertEquals(group.getGroup().size(), 0);
 	}

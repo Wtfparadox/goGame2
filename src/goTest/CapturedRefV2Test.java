@@ -34,7 +34,7 @@ class CapturedRefV2Test {
 
 		board.placeStone(2, 2, StoneColor.WHITE);
 
-		assertEquals(1, ref.getAndSetStoneSet(2 * dim + 2).size());
+		assertEquals(1, ref.getStoneList(12).size());
 
 	}
 
@@ -48,12 +48,12 @@ class CapturedRefV2Test {
 		board.placeStone(2, 0, b);
 		board.placeStone(1, 1, b);
 
-		for (Integer i : ref.getAndSetStoneSet(0)) {
+		for (Integer i : ref.getStoneList()) {
 			System.out.println(board.getPointFromIndex(i).getColor());
 		}
 		System.out.println("");
 
-		assertEquals(3, ref.getAndSetStoneSet(0 * dim + 0).size());
+		assertEquals(3, ref.getStoneList().size());
 
 	}
 
@@ -77,7 +77,7 @@ class CapturedRefV2Test {
 		board.placeStone(3, 4, w);
 		board.placeStone(4, 4, w);
 
-		assertEquals(4, ref.getAndSetStoneSet(2 * dim + 2).size());
+		assertEquals(4, ref.getStoneList().size());
 
 	}
 
@@ -100,11 +100,11 @@ class CapturedRefV2Test {
 		board.placeStone(3, 4, w);
 		board.placeStone(4, 4, w);
 
-		for (Integer i : ref.getAndSetStoneSet(2 * dim + 2)) {
+		for (Integer i : ref.getStoneList()) {
 			System.out.println(board.getPointFromIndex(i).getColor());
 		}
 
-		assertEquals(0, ref.getAndSetStoneSet(2 * dim + 2).size());
+		assertEquals(0, ref.getStoneList().size());
 	}
 
 	@Test
@@ -137,12 +137,12 @@ class CapturedRefV2Test {
 		board.placeStone(4, 3, b);
 		board.placeStone(4, 4, b);
 
-		for (Integer i : ref.getAndSetStoneSet(2 * dim + 2)) {
+		for (Integer i : ref.getStoneList()) {
 			System.out.println(board.getPointFromIndex(i).getColor());
 		}
 		System.out.println("");
 
-		assertEquals(8, ref.getAndSetStoneSet(2 * dim + 2).size());
+		assertEquals(8, ref.getStoneList().size());
 	}
 
 	@Test
@@ -153,12 +153,12 @@ class CapturedRefV2Test {
 
 		board.placeStone(4, 4, w);
 
-		for (Integer i : ref.getAndSetLibertySet(2)) {
+		for (Integer i : ref.getLibertyList()) {
 			System.out.println(board.getPointFromIndex(i).getColor());
 		}
 		System.out.println("");
 
-		assertEquals(3, ref.getAndSetLibertySet(2).size());
+		assertEquals(3, ref.getLibertyList().size());
 	}
 
 	@Test
@@ -174,33 +174,18 @@ class CapturedRefV2Test {
 		board.placeStoneFromIndex(12, b);
 		board.placeStoneFromIndex(13, b);
 
-		for (Integer i : ref.getAndSetLibertySet(5)) {
-			System.out.println(board.getPointFromIndex(i).getColor());
-		}
-		System.out.println("");
+		ref.markPointsForRemoval(5);
+		assertEquals(2, ref.getLibertyList().size());
+		assertEquals(0, ref.getStoneList().size());
 
-		assertEquals(2, ref.getAndSetLibertySet(5).size());
+		ref.markPointsForRemoval(12);
 
-		for (Integer i : ref.getAndSetLibertySet(5)) {
-			System.out.println(board.getPointFromIndex(i).getColor());
-			System.out.println(i);
-		}
-		System.out.println("");
-
-		assertEquals(0, ref.getAndSetStoneSet(5).size());
-
-		for (Integer i : ref.getAndSetLibertySet(12)) {
-			System.out.println(board.getPointFromIndex(i).getColor());
-			System.out.println(i);
-		}
-		System.out.println("");
-
-		assertEquals(15, ref.getAndSetLibertySet(12).size());
+		assertEquals(15, ref.getLibertyList().size());
 
 		board.placeStoneFromIndex(20, w);
 
-		assertEquals(2, ref.getAndSetLibertySet(12).size());
-		assertEquals(0, ref.getAndSetLibertySet(20).size());
+		ref.markPointsForRemoval(12);
+		assertEquals(2, ref.getLibertyList().size());
 	}
 
 	@Test
@@ -213,12 +198,9 @@ class CapturedRefV2Test {
 
 		board.placeStoneFromIndex(0, b);
 
-		for (Integer i : ref.getAndSetLibertySet(18)) {
-			System.out.println(board.getPointFromIndex(i).getColor());
-		}
-		System.out.println("");
+		ref.markPointsForRemoval(6);
 
-		assertEquals(6, ref.getAndSetLibertySet(18).size());
+		assertEquals(6, ref.getLibertyList().size());
 
 	}
 
@@ -238,21 +220,10 @@ class CapturedRefV2Test {
 
 		board.placeStoneFromIndex(13, w);
 
-//		for (Integer i : ref.getAndSetLibertySet(18)) {
-//			System.out.println(board.getPointFromIndex(i).getColor());
-//			System.out.println(i);
-//		}
-//		System.out.println("");
-//		System.out.println("");
+		ref.markPointsForRemoval(18);
 
-		assertEquals(9, ref.getAndSetLibertySet(18).size());
-
-//		for (Integer i : ref.getAndSetStoneSet(18)) {
-//			System.out.println(board.getPointFromIndex(i).getColor());
-//		}
-//		System.out.println("");
-
-		assertEquals(1, ref.getAndSetStoneSet(18).size());
+		assertEquals(9, ref.getLibertyList().size());
+		assertEquals(1, ref.getStoneList().size());
 
 	}
 

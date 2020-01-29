@@ -55,8 +55,8 @@ public class GoClient {
 		int port = -1;
 		while (sock == null) {
 			try {
-				host = tui.getIp();
-				port = tui.getInt("Please enter a port number.");
+				host = InetAddress.getByName("localhost");// tui.getIp();
+				port = 8888;// tui.getInt("Please enter a port number.");
 			} catch (IOException e) {
 				e.printStackTrace();
 				System.out.println("Client could not read user input");
