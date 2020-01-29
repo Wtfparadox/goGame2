@@ -7,8 +7,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import goController.GameController;
 import goExceptions.ExitProgram;
+import goGame.ServerGame;
 
 public class GoServer implements Runnable {
 
@@ -16,7 +16,7 @@ public class GoServer implements Runnable {
 
 	private GoServerTUI tui;
 
-	private List<GameController> gameList;
+	private List<ServerGame> gameList;
 	private int connectedClients;
 
 	public GoServer(GoServerTUI tuiArg) {
@@ -67,7 +67,7 @@ public class GoServer implements Runnable {
 	private void initiateGameLobby(Socket sock) throws IOException {
 		int index = connectedClients;
 		if (index % 2 != 0) {
-			gameList.add(new GameController());
+			gameList.add(new ServerGame(5));
 			index--;
 		} else {
 			index = index - 2;
@@ -77,7 +77,7 @@ public class GoServer implements Runnable {
 		new Thread(handler).start();
 	}
 
-	public void removeGame(GameController game) {
+	public void removeGame(ServerGame game) {
 		gameList.remove(game);
 	}
 

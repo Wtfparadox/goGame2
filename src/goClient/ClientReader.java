@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Queue;
 
+import goServerClientCommunication.Reader;
+
 public class ClientReader extends Reader {
 
 	public ClientReader(InputStream in, Queue<String> queue) {

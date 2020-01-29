@@ -6,16 +6,15 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 
+import goExceptions.ConnectionLostException;
 import goExceptions.EndOfGameException;
 import goExceptions.ExitProgram;
-import goExceptions.ServerUnavailableException;
 
 public class GoClient {
 
 	private GoClientTUI tui;
 
 	private InputHandlerClient ih;
-	private ClientWriter writer;
 
 	private InputStream in;
 	private OutputStream out;
@@ -24,7 +23,6 @@ public class GoClient {
 
 	public GoClient() {
 		tui = new GoClientTUI(this);
-		ih = new InputHandlerClient(tui);
 	}
 
 	public void start() {
@@ -32,21 +30,20 @@ public class GoClient {
 		while (newGame) {
 			try {
 				createConnection();
-				initializeWriter();
-				initializeReaders();
-				makeHandShake();
+				initializeCommunicationChannels();
+				ih.makeHandShake();
 
 				while (true) {
 					ih.processInput();
 				}
 			} catch (ExitProgram e) {
 				System.out.println("The client has stopped program execution");
-			} catch (ServerUnavailableException e) {
-				System.out.println("Could not write to server");
 			} catch (EndOfGameException e) {
 				tui.getBoolean("Do you wish to play another game?");
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ConnectionLostException e) {
+				tui.showMessage("Connection with server lost");
 				e.printStackTrace();
 			}
 		}
@@ -88,24 +85,11 @@ public class GoClient {
 		sock = null;
 	}
 
-	private void makeHandShake() throws ServerUnavailableException, IOException {
-		int version = tui.getInt("Which protocol version do you prefer?");
-		String name = tui.getString("What is your name?");
-		String color = tui.getColor();
-		writer.doHandshake(version, name, color);
-	}
-
-	private void initializeWriter() throws IOException {
-		writer = new ClientWriter(out);
-		ih.addWriter(writer);
-	}
-
-	private void initializeReaders() {
+	private void initializeCommunicationChannels() throws ConnectionLostException {
 		try {
-			// ih.startReader(System.in);
-			ih.startReader(new ClientReader(in, ih.getQueue()));
+			ih = new InputHandlerClient(tui, out);
+			ih.startReader(in);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

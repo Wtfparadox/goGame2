@@ -5,9 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import goGame.Board;
-import goGame.CaptureReferee;
-import goGame.StoneColor;
+import goBoard.Board;
+import goBoard.StoneColor;
+import goRulesImplementation.CaptureReferee;
 
 class CapturedRefV2Test {
 	private CaptureReferee ref;

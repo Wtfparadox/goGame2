@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Queue;
 
-public class PlayerReader extends Reader {
+import goServerClientCommunication.Reader;
 
-	private static final int READERSERIAL = 2832432;
+public class PlayerReader extends Reader {
 
 	public PlayerReader(InputStream in, Queue<String> queue) {
 		super(in, queue);
@@ -26,9 +26,6 @@ public class PlayerReader extends Reader {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-//		if (testInteger(incomingMessage) || incomingMessage.contentEquals(Character.toString(ProtocolMessages.PASS))) {
-//			incomingMessage = moveFormatter(incomingMessage);
-//		}
 		return incomingMessage;
 	}
 
@@ -43,29 +40,7 @@ public class PlayerReader extends Reader {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-//		if (testInteger(incomingMessage) || incomingMessage.contentEquals(Character.toString(ProtocolMessages.PASS))) {
-//			incomingMessage = moveFormatter(incomingMessage);
-//		}
 		return Integer.parseInt(incomingMessage);
-	}
-
-	private boolean testInteger(String input) {
-		try {
-			Integer.parseInt(input);
-			return true;
-		} catch (NumberFormatException e) {
-			return false;
-		}
-	}
-
-	private String moveFormatter(String input) {
-		StringBuilder builder = new StringBuilder("O;" + READERSERIAL + ";");
-		builder.append(input);
-		return builder.toString();
-	}
-
-	public int getSerial() {
-		return READERSERIAL;
 	}
 
 }

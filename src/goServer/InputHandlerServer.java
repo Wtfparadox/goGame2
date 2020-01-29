@@ -1,35 +1,32 @@
 package goServer;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.concurrent.LinkedBlockingQueue;
 
-import goClient.ClientReader;
-import goController.GameController;
-import goExceptions.ClientUnavailableException;
+import goExceptions.ConnectionLostException;
 import goExceptions.EndOfGameException;
 import goExceptions.ExitProgram;
 import goExceptions.FormerBoardException;
-import goGame.Player;
+import goGame.ServerGame;
+import goPlayers.Player;
 import goProtocol.ProtocolMessages;
+import goServerClientCommunication.InputHandler;
 
-public class InputHandlerServer {
+public class InputHandlerServer extends InputHandler {
 	// private GoClientTUI tui;
-	private LinkedBlockingQueue<String> queue;
-	private GameController controller;
+	private ServerGame controller;
 	private ServerWriter writer;
 
 	private Player player;
 
-	public InputHandlerServer(GameController gc, OutputStream out) { // GoClientTUI tuiArg
+	public InputHandlerServer(ServerGame gc, OutputStream out) { // GoClientTUI tuiArg
 		controller = gc;
 		writer = new ServerWriter(out);
-		queue = new LinkedBlockingQueue<>();
 	}
 
-	private void handleInput(String input)
-			throws ExitProgram, EndOfGameException, IOException, ClientUnavailableException {
+	@Override
+	protected void handleInput(String input)
+			throws ExitProgram, EndOfGameException, IOException, ConnectionLostException {
 		String[] inputArguments = input.split(ProtocolMessages.DELIMITER);
 		if (inputArguments.length > 0) {
 			switch (input.charAt(0)) {
@@ -52,7 +49,7 @@ public class InputHandlerServer {
 		}
 	}
 
-	private void handleTurn(String move) throws IOException, EndOfGameException, ClientUnavailableException {
+	private void handleTurn(String move) throws IOException, EndOfGameException, ConnectionLostException {
 		if (validateMove(move)) {
 			controller.setCurrentMove(move);
 			if (!controller.gameOver()) {
@@ -68,7 +65,7 @@ public class InputHandlerServer {
 		}
 	}
 
-	private boolean validateMove(String move) throws IOException, EndOfGameException, ClientUnavailableException {
+	private boolean validateMove(String move) throws IOException, EndOfGameException {
 		if (!move.contentEquals("P") && !isInteger(move)) {
 			return false;
 		} else if (isInteger(move)) {
@@ -78,7 +75,7 @@ public class InputHandlerServer {
 		}
 	}
 
-	private void makeMove(String move) throws IOException, ClientUnavailableException, EndOfGameException {
+	private void makeMove(String move) throws IOException, EndOfGameException, ConnectionLostException {
 		if (isInteger(move)) {
 			try {
 				controller.doBoardMove(player.getColor(), move);
@@ -100,27 +97,11 @@ public class InputHandlerServer {
 		}
 	}
 
-	public void notifyTurn(String lastMove) throws ClientUnavailableException {
+	public void notifyTurn(String lastMove) throws ConnectionLostException {
 		writer.giveTurnToMove(controller.boardToString(), lastMove);
 	}
 
-	public void beginGame() throws ClientUnavailableException {
+	public void beginGame() throws ConnectionLostException {
 		writer.startGame(player.getColor().toString().charAt(0), controller.boardToString());
-	}
-
-	public void startReader(InputStream in) throws IOException {
-		new Thread(new ClientReader(in, queue)).start();
-	}
-
-	public void setPlayer(Player player) {
-		this.player = player;
-	}
-
-	public void processInput() throws ExitProgram, EndOfGameException, IOException, ClientUnavailableException {
-		try {
-			handleInput(queue.take());
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 	}
 }

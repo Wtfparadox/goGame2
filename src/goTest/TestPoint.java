@@ -6,14 +6,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import goGame.Point;
-import goGame.PointState;
-import goGame.StoneColor;
+import goBoard.Point;
+import goBoard.PointState;
+import goBoard.StoneColor;
 
 class TestPoint {
 	private Point pointA, pointB, pointC;
-	private StoneColor b, w, n;
-	private PointState o, c, f;
+	private StoneColor b, w;
+	private PointState o, c;
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -22,10 +22,8 @@ class TestPoint {
 		pointC = new Point();
 		b = StoneColor.BLACK;
 		w = StoneColor.WHITE;
-		n = StoneColor.NONE;
 		o = PointState.OCCUPIED;
 		c = PointState.CONQUERED;
-		f = PointState.FREE;
 	}
 
 	@Test

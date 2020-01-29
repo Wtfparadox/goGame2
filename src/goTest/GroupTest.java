@@ -5,11 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import goGame.Board;
-import goGame.GroupFormer;
-import goGame.LibertyGroupFormer;
-import goGame.StoneColor;
-import goGame.StoneGroupFormer;
+import goBoard.Board;
+import goBoard.StoneColor;
+import goRulesImplementation.GroupFormer;
+import goRulesImplementation.LibertyGroupFormer;
+import goRulesImplementation.StoneGroupFormer;
 
 class GroupTest {
 

@@ -1,31 +1,31 @@
 package goClient;
 
 import java.io.IOException;
-import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.io.OutputStream;
 
+import goBoard.StoneColor;
+import goExceptions.ConnectionLostException;
 import goExceptions.EndOfGameException;
 import goExceptions.ExitProgram;
-import goExceptions.ServerUnavailableException;
-import goGame.HumanPlayer;
-import goGame.Player;
-import goGame.StoneColor;
+import goGame.ClientGame;
+import goPlayers.HumanPlayer;
 import goProtocol.ProtocolMessages;
+import goServerClientCommunication.InputHandler;
 
-public class InputHandlerClient {
+public class InputHandlerClient extends InputHandler {
+
 	private GoClientTUI tui;
-	private LinkedBlockingQueue<String> queue;
 	private ClientGame game;
 	private ClientWriter writer;
-	private Player player;
 
-	public InputHandlerClient(GoClientTUI tuiArg) {
-		queue = new LinkedBlockingQueue<>();
+	public InputHandlerClient(GoClientTUI tuiArg, OutputStream out) throws IOException, ConnectionLostException {
+		writer = new ClientWriter(out);
 		tui = tuiArg;
 	}
 
-	private void handleInput(String input)
-			throws ExitProgram, EndOfGameException, ServerUnavailableException, IOException {
+	@Override
+	protected void handleInput(String input)
+			throws ExitProgram, EndOfGameException, IOException, ConnectionLostException {
 		String[] inputArguments = input.split(ProtocolMessages.DELIMITER);
 		if (inputArguments.length > 0) {
 			switch (input.charAt(0)) {
@@ -35,7 +35,8 @@ public class InputHandlerClient {
 			case ProtocolMessages.GAME:
 				tui.showMessage("game start");
 				char color = inputArguments[2].charAt(0);
-				game = new ClientGame(color, this, new HumanPlayer("Thomas", stringToStoneColor(color), queue, writer));
+				game = new ClientGame(5, color, this,
+						new HumanPlayer("Thomas", stringToStoneColor(color), queue, writer));
 				break;
 			case ProtocolMessages.TURN:
 				tui.showMessage("Its your turn!");
@@ -47,57 +48,24 @@ public class InputHandlerClient {
 			case ProtocolMessages.END:
 				String reason = "";
 				throw new EndOfGameException("The game has ended because " + reason);
-//			case 'O':
-//				if (inputArguments[1] == "2832432") {
-//					writer.doMove(Integer.parseInt(inputArguments[2]));
-//				} else {
-//					tui.showMessage("Message not defined in protocol, command unknown.");
-//				}
-//				break;
 			}
 		} else {
 			tui.showMessage("Message not defined in protocol, command unknown.");
 		}
 	}
 
-	private void processTurn(String input) throws ServerUnavailableException {
+	private void processTurn(String input) throws ConnectionLostException {
 		if (!input.contentEquals(Character.toString(ProtocolMessages.PASS)) && input != null) {
 			game.processOpponentsMove(Integer.parseInt(input));
 		}
 		game.giveTurn();
 	}
 
-//	public void handleTurn(String input) throws ServerUnavailableException {
-//		if (!input.contentEquals(Character.toString(ProtocolMessages.PASS)) && input != null) {
-//			int otherPlayerMove = Integer.parseInt(input);
-//			game.processOpponentsMove(otherPlayerMove);
-//		}
-//		int ownMove = game.processOwnMove();
-//		writer.doMove(ownMove);
-//	}
-
-	public void startReader(Reader reader) throws IOException {
-		new Thread(reader).start();
-	}
-
-	public void setPlayer(Player player) throws IOException {
-		this.player = player;
-	}
-
-	public Queue<String> getQueue() {
-		return queue;
-	}
-
-	public void addWriter(ClientWriter writer) {
-		this.writer = writer;
-	}
-
-	public void processInput() throws ExitProgram, EndOfGameException, ServerUnavailableException, IOException {
-		try {
-			handleInput(queue.take());
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+	public void makeHandShake() throws IOException, ConnectionLostException {
+		int version = tui.getInt("Which protocol version do you prefer?");
+		String name = tui.getString("What is your name?");
+		String color = tui.getColor();
+		writer.doHandshake(version, name, color);
 	}
 
 	private StoneColor stringToStoneColor(char color) {

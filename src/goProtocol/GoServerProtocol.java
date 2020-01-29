@@ -1,6 +1,6 @@
 package goProtocol;
 
-import goExceptions.ClientUnavailableException;
+import goExceptions.ConnectionLostException;
 
 public interface GoServerProtocol {
 
@@ -8,41 +8,44 @@ public interface GoServerProtocol {
 	 * After receiving a request to play from a client respond with
 	 * 
 	 * @return H;version;(optional free message)
-	 * @throws ClientUnavailableException
+	 * @throws ConnectionLostException
 	 */
-	public void respondToHandshake(String finalVersion) throws ClientUnavailableException;
+	public void respondToHandshake(String finalVersion) throws ConnectionLostException;
 
 	/**
 	 * When two clients have connected the server starts the game. Both clients
 	 * receive a notification: G;board;color
 	 * 
-	 * @throws ClientUnavailableException
+	 * @throws ConnectionLostException
+	 * 
 	 */
-	public void startGame(char color, String board) throws ClientUnavailableException;
+	public void startGame(char color, String board) throws ConnectionLostException;
 
 	/**
 	 * Give turn to client in the form: T;board;opponentsLastMove, opponentsLastMove
 	 * is either pass or null at start of game
 	 * 
-	 * @throws ClientUnavailableException
+	 * @throws ConnectionLostException
 	 */
-	public void giveTurnToMove(String board, String lastMove) throws ClientUnavailableException;
+	public void giveTurnToMove(String board, String lastMove) throws ConnectionLostException;
 
 	/**
 	 * After receiving move from client this response is sent if the move was valid
 	 * 
 	 * @return R;V;board
+	 * @throws ConnectionLostException
 	 * @throws ClientUnavailableException
 	 */
-	public void validMove(String board) throws ClientUnavailableException;
+	public void validMove(String board) throws ConnectionLostException;
 
 	/**
 	 * After receiving move from client this response is sent if the move was valid
 	 * 
 	 * @return R;I;(optional free message)
+	 * @throws ConnectionLostException
 	 * @throws ClientUnavailableException
 	 */
-	public void invalidMove(String msg) throws ClientUnavailableException;
+	public void invalidMove(String msg) throws ConnectionLostException;
 
 	/**
 	 * The game can end for several reasons, when it does so. The server sends to
@@ -51,10 +54,11 @@ public interface GoServerProtocol {
 	 * Reasons can be: [F]inished, [C]heated, [D]isconnect from other client, E[X]it
 	 * from other client.
 	 * 
+	 * @throws ConnectionLostException
+	 * 
 	 * @throws ClientUnavailableException
 	 * 
 	 */
-	public void endGame(char reason, char winner, double scoreBlack, double scoreWhite)
-			throws ClientUnavailableException;
+	public void endGame(char reason, char winner, double scoreBlack, double scoreWhite) throws ConnectionLostException;
 
 }

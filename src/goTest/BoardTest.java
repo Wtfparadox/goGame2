@@ -6,8 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import goGame.Board;
-import goGame.Point;
+import goBoard.Board;
+import goBoard.Point;
 
 class BoardTest {
 
@@ -15,7 +15,7 @@ class BoardTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		board = new Board(5, null);
+		board = new Board(5);
 	}
 
 	@Test
@@ -44,7 +44,6 @@ class BoardTest {
 
 	@Test
 	void testIsWithinBoardDim() {
-		Point[][] testMatrix = board.getBoardMatrix();
 		assertFalse(board.validPoint(-1, 0));
 		assertFalse(board.validPoint(board.getSize(), 0));
 		assertTrue(board.validPoint(board.getSize() - 1, board.getSize() - 1));

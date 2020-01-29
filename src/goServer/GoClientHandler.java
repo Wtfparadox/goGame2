@@ -4,17 +4,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import goController.GameController;
-import goExceptions.ClientUnavailableException;
+import goExceptions.ConnectionLostException;
 import goExceptions.EndOfGameException;
 import goExceptions.ExitProgram;
+import goGame.ServerGame;
 
 public class GoClientHandler implements Runnable {
 
 	private InputHandlerServer ihs;
 	private InputStream in;
 
-	public GoClientHandler(InputStream in, OutputStream out, GameController gc) throws IOException {
+	public GoClientHandler(InputStream in, OutputStream out, ServerGame gc) throws IOException {
 		ihs = new InputHandlerServer(gc, out);
 		this.in = in;
 	}
@@ -32,7 +32,7 @@ public class GoClientHandler implements Runnable {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (ClientUnavailableException e) {
+			} catch (ConnectionLostException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

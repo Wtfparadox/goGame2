@@ -1,8 +1,8 @@
 package goGUI;
 
-import goGame.Point;
-import goGame.PointState;
-import goGame.StoneColor;
+import goBoard.Point;
+import goBoard.PointState;
+import goBoard.StoneColor;
 import observers.BoardWatcher;
 import observers.ObservableBoard;
 

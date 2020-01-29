@@ -1,6 +1,6 @@
 package observers;
 
-import goGame.Point;
+import goBoard.Point;
 
 public interface ObservableBoard {
 

@@ -2,7 +2,7 @@ package goProtocol;
 
 import java.io.IOException;
 
-import goExceptions.ServerUnavailableException;
+import goExceptions.ConnectionLostException;
 
 public interface GoClientProtocol {
 
@@ -13,7 +13,7 @@ public interface GoClientProtocol {
 	 * @throws ServerUnavailableException
 	 * @throws IOException
 	 */
-	public void doHandshake(int version, String name, String color) throws ServerUnavailableException, IOException;
+	public void doHandshake(int version, String name, String color) throws ConnectionLostException, IOException;
 
 	/**
 	 * Client sends suggested move as an integer to server in the form M;move upon
@@ -23,13 +23,13 @@ public interface GoClientProtocol {
 	 * 
 	 * @throws ServerUnavailableException
 	 */
-	public void doMove(String move) throws ServerUnavailableException;
+	public void doMove(String move) throws ConnectionLostException;
 
 	/**
 	 * Client quits the game and terminates connection by sending Q to the server
 	 * 
-	 * @throws ServerUnavailableException
+	 * @throws ConnectionLostException
 	 * 
 	 */
-	public void quitGame() throws ServerUnavailableException;
+	public void quitGame() throws ConnectionLostException;
 }

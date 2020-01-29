@@ -1,67 +1,47 @@
 package goServer;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 
-import goExceptions.ClientUnavailableException;
+import goExceptions.ConnectionLostException;
 import goProtocol.GoServerProtocol;
 import goProtocol.ProtocolMessages;
+import goServerClientCommunication.Writer;
 
-public class ServerWriter implements GoServerProtocol {
-
-	private BufferedWriter out;
+public class ServerWriter extends Writer implements GoServerProtocol {
 
 	public ServerWriter(OutputStream out) {
-		this.out = new BufferedWriter(new OutputStreamWriter(out));
-	}
-
-	public void sendMessage(String msg) throws ClientUnavailableException {
-		if (out != null) {
-			try {
-				out.write(msg);
-				out.newLine();
-				out.flush();
-			} catch (IOException e) {
-				System.out.println(e.getMessage());
-				throw new ClientUnavailableException("Could not write to client.");
-			}
-		} else {
-			throw new ClientUnavailableException("Could not write to client.");
-		}
+		super(out);
 	}
 
 	@Override
-	public void respondToHandshake(String finalVersion) throws ClientUnavailableException {
+	public void respondToHandshake(String finalVersion) throws ConnectionLostException {
 		sendMessage(ProtocolMessages.HANDSHAKE + ProtocolMessages.DELIMITER + finalVersion);
 	}
 
 	@Override
-	public void startGame(char color, String board) throws ClientUnavailableException {
+	public void startGame(char color, String board) throws ConnectionLostException {
 		sendMessage(ProtocolMessages.GAME + ProtocolMessages.DELIMITER + board + ProtocolMessages.DELIMITER + color);
 	}
 
 	@Override
-	public void giveTurnToMove(String board, String lastMove) throws ClientUnavailableException {
+	public void giveTurnToMove(String board, String lastMove) throws ConnectionLostException {
 		sendMessage(ProtocolMessages.TURN + ProtocolMessages.DELIMITER + board + ProtocolMessages.DELIMITER + lastMove);
 	}
 
 	@Override
-	public void validMove(String board) throws ClientUnavailableException {
+	public void validMove(String board) throws ConnectionLostException {
 		sendMessage(ProtocolMessages.RESULT + ProtocolMessages.DELIMITER + ProtocolMessages.VALID
 				+ ProtocolMessages.DELIMITER + board);
 	}
 
 	@Override
-	public void invalidMove(String msg) throws ClientUnavailableException {
+	public void invalidMove(String msg) throws ConnectionLostException {
 		sendMessage(ProtocolMessages.RESULT + ProtocolMessages.DELIMITER + ProtocolMessages.INVALID
 				+ ProtocolMessages.DELIMITER + msg);
 	}
 
 	@Override
-	public void endGame(char reason, char winner, double scoreBlack, double scoreWhite)
-			throws ClientUnavailableException {
+	public void endGame(char reason, char winner, double scoreBlack, double scoreWhite) throws ConnectionLostException {
 		sendMessage(ProtocolMessages.END + ProtocolMessages.DELIMITER + reason + ProtocolMessages.DELIMITER + winner
 				+ ProtocolMessages.DELIMITER + scoreBlack + ProtocolMessages.DELIMITER + scoreWhite);
 	}
