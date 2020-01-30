@@ -10,12 +10,11 @@ public class Referee {
 		board = boardArg;
 	}
 
-	public boolean isOccupied(int row, int col) {
-		return board.getBoardMatrix()[row][col].getState() == PointState.OCCUPIED;
+	public boolean isOccupied(int index) {
+		return board.getPointFromIndex(index).getState() == PointState.OCCUPIED;
 	}
 
-	public boolean validMove() {
-		// to be implemented
-		return false;
+	public boolean validMove(int index) {
+		return !isOccupied(index) && board.validPointFromIndex(index);
 	}
 }

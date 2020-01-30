@@ -13,11 +13,11 @@ import goServerClientCommunication.InputHandler;
 
 public class InputHandlerServer extends InputHandler {
 	// private GoClientTUI tui;
-	private ServerGame controller;
+	private ServerGame game;
 	private ServerWriter writer;
 
 	public InputHandlerServer(ServerGame gc, OutputStream out) { // GoClientTUI tuiArg
-		controller = gc;
+		game = gc;
 		writer = new ServerWriter(out);
 	}
 
@@ -30,8 +30,8 @@ public class InputHandlerServer extends InputHandler {
 			case ProtocolMessages.HANDSHAKE:
 				System.out.println("Handshake recieved");
 				writer.respondToHandshake("1");
-				controller.addInputHandler(this);
-				controller.readyForGame();
+				game.addInputHandler(this);
+				game.readyForGame();
 				break;
 			case ProtocolMessages.QUIT:
 				System.out.println("Quit received");
@@ -48,13 +48,12 @@ public class InputHandlerServer extends InputHandler {
 
 	private void handleTurn(String move) throws IOException, EndOfGameException, ConnectionLostException {
 		if (validateMove(move)) {
-			controller.setCurrentMove(move);
-			if (!controller.gameOver()) {
+			game.setCurrentMove(move);
+			if (!game.gameOver()) {
 				makeMove(move);
-				writer.validMove(controller.boardToString());
+				writer.validMove(game.boardToString());
 			} else {
-				writer.endGame(ProtocolMessages.FINISHED, ProtocolMessages.BLACK, 1.0, 1.0);
-				throw new EndOfGameException("Two passes");
+				throw new EndOfGameException("The game has ended because both players passed consecutively.");
 			}
 		} else {
 			writer.invalidMove("Your move does not correspond to an existing field on the Go board.");
@@ -66,7 +65,7 @@ public class InputHandlerServer extends InputHandler {
 		if (!move.contentEquals("P") && !isInteger(move)) {
 			return false;
 		} else if (isInteger(move)) {
-			return controller.isValidMove(Integer.parseInt(move));
+			return game.isValidMove(Integer.parseInt(move));
 		} else {
 			return true;
 		}
@@ -75,13 +74,13 @@ public class InputHandlerServer extends InputHandler {
 	private void makeMove(String move) throws IOException, EndOfGameException, ConnectionLostException {
 		if (isInteger(move)) {
 			try {
-				controller.doBoardMove(player.getColor(), move);
+				game.doBoardMove(player.getColor(), move);
 			} catch (FormerBoardException e) {
 				writer.invalidMove("This board configuration has been played already");
 				throw new EndOfGameException("Cheated");
 			}
 		} else {
-			controller.doPassMove();
+			game.doPassMove();
 		}
 	}
 
@@ -95,10 +94,15 @@ public class InputHandlerServer extends InputHandler {
 	}
 
 	public void notifyTurn(String lastMove) throws ConnectionLostException {
-		writer.giveTurnToMove(controller.boardToString(), lastMove);
+		writer.giveTurnToMove(game.boardToString(), lastMove);
 	}
 
 	public void beginGame() throws ConnectionLostException {
-		writer.startGame(player.getColor().toString().charAt(0), controller.boardToString());
+		writer.startGame(player.getColor().toString().charAt(0), game.boardToString());
+	}
+
+	public void endGame(char reason) throws ConnectionLostException {
+		writer.endGame(reason, game.determineWinner(), game.getScoreBoard().getWhiteScore(),
+				game.getScoreBoard().getBlackScore());
 	}
 }

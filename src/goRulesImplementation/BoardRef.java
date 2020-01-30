@@ -1,10 +1,10 @@
-package goBoard;
+package goRulesImplementation;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import goBoard.Board;
 import goExceptions.FormerBoardException;
-import goRulesImplementation.Referee;
 
 public class BoardRef extends Referee {
 	private List<String> playedBoards;

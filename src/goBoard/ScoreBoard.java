@@ -1,9 +1,4 @@
-package goRulesImplementation;
-
-import goBoard.Board;
-import goBoard.Point;
-import goBoard.PointState;
-import goBoard.StoneColor;
+package goBoard;
 
 public class ScoreBoard {
 	private double blackScore;
