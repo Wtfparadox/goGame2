@@ -38,13 +38,18 @@ public class GoClient {
 				}
 			} catch (ExitProgram e) {
 				System.out.println("The client has stopped program execution");
-			} catch (EndOfGameException e) {
-				tui.getBoolean("Do you wish to play another game?");
+				newGame = false;
+			} catch (EndOfGameException | ConnectionLostException e) {
+				System.out.println(e.getMessage());
+				if (!tui.getBoolean("Do you wish to play another game?")) {
+					System.out.println("reached");
+					newGame = false;
+					closeConnection();
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
-			} catch (ConnectionLostException e) {
-				tui.showMessage("Connection with server lost");
-				e.printStackTrace();
+			} finally {
+				System.out.println("Please close the GUI to finish execution");
 			}
 		}
 	}

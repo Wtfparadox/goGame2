@@ -72,12 +72,13 @@ public class GoServer implements Runnable {
 		} else {
 			index = index - 2;
 		}
-		GoClientHandler handler = new GoClientHandler(sock.getInputStream(), sock.getOutputStream(),
-				gameList.get(index));
+		System.out.println(connectedClients);
+		GoClientHandler handler = new GoClientHandler(sock, gameList.get(index), this);
 		new Thread(handler).start();
 	}
 
 	public void removeGame(ServerGame game) {
+		connectedClients = connectedClients - 2;
 		gameList.remove(game);
 	}
 
@@ -85,4 +86,5 @@ public class GoServer implements Runnable {
 		GoServer server = new GoServer(new GoServerTUI());
 		new Thread(server).start();
 	}
+
 }

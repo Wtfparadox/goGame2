@@ -14,20 +14,22 @@ public class ClientReader extends Reader {
 
 	@Override
 	public void run() {
-		while (true) {
-			queue.add(readMessage());
+		String msg;
+		try {
+			msg = readMessage();
+			while (msg != null) {
+				queue.add(msg);
+				msg = readMessage();
+			}
+		} catch (IOException e) {
+			System.out.println("Reader closed");
 		}
+		this.close();
 	}
 
 	@Override
-	public String readMessage() {
-		String incomingMessage = "";
-		try {
-			incomingMessage = in.readLine();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return incomingMessage;
+	public String readMessage() throws IOException {
+		return in.readLine();
 	}
 
 }

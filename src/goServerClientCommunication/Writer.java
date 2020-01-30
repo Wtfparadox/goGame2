@@ -29,4 +29,12 @@ public class Writer {
 			throw new ConnectionLostException("Could not write to server.");
 		}
 	}
+
+	public void close() {
+		try {
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

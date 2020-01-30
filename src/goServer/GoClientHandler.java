@@ -3,48 +3,80 @@ package goServer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.Socket;
 
 import goExceptions.ConnectionLostException;
 import goExceptions.EndOfGameException;
 import goExceptions.ExitProgram;
 import goGame.ServerGame;
+import goProtocol.ProtocolMessages;
 
 public class GoClientHandler implements Runnable {
 
-	private InputHandlerServer ihs;
+	private InputHandlerServer inputHandler;
 	private InputStream in;
+	private OutputStream out;
+	private ServerGame game;
+	private GoServer server;
 
-	public GoClientHandler(InputStream in, OutputStream out, ServerGame gc) throws IOException {
-		ihs = new InputHandlerServer(gc, out);
-		this.in = in;
+	public GoClientHandler(Socket sock, ServerGame gc, GoServer server) throws IOException {
+		this.in = sock.getInputStream();
+		this.out = sock.getOutputStream();
+		inputHandler = new InputHandlerServer(gc, out);
+		game = gc;
+		this.server = server;
 	}
 
 	@Override
 	public void run() {
 		boolean isRunning = true;
 		initializeReaders();
-		while (isRunning) {
+		try {
+			while (isRunning) {
+				inputHandler.processInput();
+			}
+		} catch (ExitProgram e) {
+			game.gameHasEnded(ProtocolMessages.EXIT);
+		} catch (EndOfGameException e) {
+			if (e.getMessage().contains("cheat")) {
+				game.gameHasEnded(ProtocolMessages.CHEAT);
+			} else {
+				game.gameHasEnded(ProtocolMessages.FINISHED);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ConnectionLostException e) {
+			game.gameHasEnded(ProtocolMessages.DISCONNECT);
+		} finally {
 			try {
-				ihs.processInput();
-			} catch (ExitProgram | EndOfGameException e) {
-				isRunning = false;
-				e.printStackTrace();
+				server.removeGame(game);
+				in.close();
+				out.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ConnectionLostException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-
 	}
 
 	private void initializeReaders() {
 		try {
-			ihs.startReader(in);
+			inputHandler.startReader(in);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+
+//	public void addListener(ClientWatcher listener) {
+//		listeners.add(listener);
+//	}
+//
+//	public void removeListener(ClientWatcher listener) {
+//		listeners.remove(listener);
+//	}
+//
+//	public void notifyAllListeners(char reason, int number) {
+//		for (ClientWatcher run : listeners) {
+//			run.notifyRunnableEnd(this, reason, number);
+//		}
+//	}
 }

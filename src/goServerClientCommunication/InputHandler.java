@@ -38,4 +38,8 @@ public abstract class InputHandler {
 		this.player = player;
 	}
 
+	public void closeInputHandler(InputHandler handler) {
+
+	}
+
 }

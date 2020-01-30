@@ -66,6 +66,22 @@ public class ServerGame extends Game {
 		}
 	}
 
+	public void gameHasEnded(char reason) {
+		for (InputHandlerServer client : clients) {
+			try {
+				client.endGame(reason);
+			} catch (ConnectionLostException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void rematch(boolean doRematch) throws IOException, ConnectionLostException {
+		if (doRematch) {
+			readyForGame();
+		}
+	}
+
 	public void addInputHandler(InputHandlerServer handler) {
 		clients.add(handler);
 	}

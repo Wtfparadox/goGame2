@@ -35,7 +35,7 @@ public class InputHandlerServer extends InputHandler {
 				break;
 			case ProtocolMessages.QUIT:
 				System.out.println("Quit received");
-				break;
+				throw new ExitProgram("User has quit");
 			case ProtocolMessages.MOVE:
 				System.out.println("Move received");
 				handleTurn(inputArguments[1]);

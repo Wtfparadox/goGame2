@@ -38,11 +38,11 @@ public class InputHandlerClient extends InputHandler {
 				processTurn(inputArguments[2]);
 				break;
 			case ProtocolMessages.RESULT:
-				tui.showMessage("game result");
+				tui.showMessage(inputArguments[0]);
 				break;
 			case ProtocolMessages.END:
-				String reason = "";
-				throw new EndOfGameException("The game has ended because " + reason);
+				tui.showMessage(inputArguments[0]);
+				throw new EndOfGameException("The game has ended because " + inputArguments[0]);
 			}
 		} else {
 			tui.showMessage("Message not defined in protocol, command unknown.");
