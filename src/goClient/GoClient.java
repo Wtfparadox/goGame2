@@ -42,7 +42,6 @@ public class GoClient {
 			} catch (EndOfGameException | ConnectionLostException e) {
 				System.out.println(e.getMessage());
 				if (!tui.getBoolean("Do you wish to play another game?")) {
-					System.out.println("reached");
 					newGame = false;
 					closeConnection();
 				}
