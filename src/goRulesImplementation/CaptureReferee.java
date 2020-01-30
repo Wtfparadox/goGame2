@@ -62,19 +62,26 @@ public class CaptureReferee extends Referee {
 	}
 
 	private void findCapturedStones(int index, Point initialPoint) {
+		// First list of stones, stone sequence containing the stone at index
 		List<Integer> stoneChain = findCapturedFields(new StoneGroupFormer(index, board));
 		List<Integer> coordinates = board.getNeighborCoordinates(index);
 		List<Integer> neighborStoneChain = new ArrayList<>();
 
+		// If the initial stone list is empty, look if the placed stone captures any
+		// neighboring fields
 		if (stoneChain.isEmpty()) {
 			for (Integer c : coordinates) {
+				// Skip checking liberties that are already present in a chain
 				if (!libertiesToBeCaptured.contains(c) && board.getPointFromIndex(c).isFreePoint()) {
 					libertiesToBeCaptured.addAll(findCapturedFields(new LibertyGroupFormer(c, board)));
+					// check if initial stone captures any neighboring other color stones
 				} else if (!board.getPointFromIndex(c).isFreePoint()) {
 					neighborStoneChain.addAll(findCapturedFields(new StoneGroupFormer(c, board)));
 				}
 			}
 		} else {
+			// check if initial stones has no free neighbors if the initial stone captures
+			// by eliminating the last free field of surrounding stones
 			for (Integer c : coordinates) {
 				if (!neighborStoneChain.contains(c)) {
 					neighborStoneChain.addAll(findCapturedFields(new StoneGroupFormer(c, board)));

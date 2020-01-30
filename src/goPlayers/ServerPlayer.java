@@ -6,7 +6,8 @@ import goBoard.StoneColor;
 public class ServerPlayer extends Player {
 
 	public ServerPlayer(String nameArg, StoneColor stoneArg) {
-		super(nameArg, stoneArg);
+		super(nameArg);
+		this.stone = stoneArg;
 	}
 
 	public int determineMove(int index) {
@@ -15,7 +16,6 @@ public class ServerPlayer extends Player {
 
 	@Override
 	public int handleTurn(Board board) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 

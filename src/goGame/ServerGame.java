@@ -49,9 +49,9 @@ public class ServerGame extends Game {
 	private void manageTurn(String lastMove) throws ConnectionLostException {
 		whiteTurn ^= true;
 		if (whiteTurn) {
-			clients.get(1).notifyTurn(lastMove);
-		} else {
 			clients.get(0).notifyTurn(lastMove);
+		} else {
+			clients.get(1).notifyTurn(lastMove);
 		}
 	}
 

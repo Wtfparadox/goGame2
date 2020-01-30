@@ -3,7 +3,6 @@ package goPlayers;
 import java.util.Queue;
 
 import goBoard.Board;
-import goBoard.StoneColor;
 import goClient.ClientWriter;
 import goClient.PlayerReader;
 import goExceptions.ConnectionLostException;
@@ -14,8 +13,8 @@ public class HumanPlayer extends Player {
 	private PlayerReader reader;
 	private ClientWriter writer;
 
-	public HumanPlayer(String nameArg, StoneColor colorArg, Queue<String> queue, ClientWriter writer) {
-		super(nameArg, colorArg);
+	public HumanPlayer(String nameArg, Queue<String> queue, ClientWriter writer) {
+		super(nameArg);
 		reader = new PlayerReader(System.in, queue);
 		this.writer = writer;
 	}

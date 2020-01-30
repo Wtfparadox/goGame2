@@ -1,6 +1,7 @@
 package goPlayers;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import goBoard.Board;
 import goBoard.Point;
@@ -10,21 +11,27 @@ public class FreeFieldStrategy implements Strategy {
 
 	@Override
 	public int determineMove(Board board) {
-		int randomFreeField = (int) (Math.random() * getFreeFields(board).length / 1);
-		return randomFreeField;
+		List<Integer> freeFields = getFreeFields(board);
+		int randomFreeField = (int) (Math.random() * freeFields.size() / 1);
+		return freeFields.get(randomFreeField);
 	}
 
-	private Integer[] getFreeFields(Board board) {
+	public List<Integer> getFreeFields(Board board) {
 		ArrayList<Integer> list = new ArrayList<>();
 		Point[][] boardMatrix = board.getBoardMatrix();
-		for (int i = 0; i < board.getSize(); i++) {
+		System.out.println(board.getSize());
+		int i = 0;
+		for (i = 0; i < board.getSize(); i++) {
 			for (int j = 0; j < board.getSize(); j++) {
 				if (boardMatrix[i][j].getState() == PointState.FREE) {
+					System.out.println("reached");
 					list.add(i * board.getSize() + j);
 				}
 			}
 		}
-		return list.toArray(new Integer[0]);
+		System.out.println(i);
+		System.out.println(list.size());
+		return list;
 	}
 
 }

@@ -37,7 +37,8 @@ public class GoServer implements Runnable {
 					connectedClients++;
 					initiateGameLobby(sock);
 				}
-
+			} catch (ExitProgram e) {
+				tui.showMessage("Server has shut down.");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -67,15 +68,13 @@ public class GoServer implements Runnable {
 	private void initiateGameLobby(Socket sock) throws IOException {
 		int index = connectedClients;
 		if (index % 2 != 0) {
-			gameList.add(new ServerGame(5));
-			// System.out.println(index);
+			int dim = tui.getInt("Choose board dimension");
+			gameList.add(new ServerGame(dim));
 		} else {
 
 		}
 
 		index = (index - 1) / 2;
-		System.out.println(index);
-		System.out.println(connectedClients);
 		GoClientHandler handler = new GoClientHandler(sock, gameList.get(index), this);
 		new Thread(handler).start();
 	}

@@ -56,6 +56,7 @@ public class GoClient {
 
 	private void createConnection() throws ExitProgram {
 		clearConnection();
+
 		InetAddress host = null;
 		int port = -1;
 		while (sock == null) {

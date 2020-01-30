@@ -7,7 +7,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Queue;
 
-import goBoard.StoneColor;
 import goPlayers.ComputerPlayer;
 import goPlayers.FreeFieldStrategy;
 import goPlayers.HumanPlayer;
@@ -60,16 +59,16 @@ public class GoClientTUI {
 		return color;
 	}
 
-	public Player choosePlayer(StoneColor color, Queue<String> queue, ClientWriter writer) throws IOException {
+	public Player choosePlayer(Queue<String> queue, ClientWriter writer) throws IOException {
 		String input = getString("Choose a player type: ");
 		while (!(input.contentEquals("C")) && !(input.contentEquals("H"))) {
 			System.out.println("[C]omputer or [H]uman");
 			input = in.readLine();
 		}
 		if (input.contentEquals("C")) {
-			return new ComputerPlayer("Thomas", color, new FreeFieldStrategy(), queue, writer);
+			return new ComputerPlayer("Thomas", new FreeFieldStrategy(), queue, writer);
 		} else {
-			return new HumanPlayer("Thomas", color, queue, writer);
+			return new HumanPlayer("Thomas", queue, writer);
 		}
 	}
 

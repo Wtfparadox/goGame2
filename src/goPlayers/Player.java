@@ -9,9 +9,12 @@ public abstract class Player {
 	protected StoneColor stone;
 	protected boolean turn;
 
-	public Player(String nameArg, StoneColor stoneArg) {
+	public Player(String nameArg) {
 		name = nameArg;
-		stone = stoneArg;
+	}
+
+	public void setColor(StoneColor color) {
+		this.stone = color;
 	}
 
 	public String getName() {

@@ -1,8 +1,6 @@
 package goGame;
 
 import goBoard.Board;
-import goBoard.Point;
-import goBoard.PointState;
 import goBoard.ScoreBoard;
 import goBoard.StoneColor;
 import goExceptions.FormerBoardException;
@@ -64,22 +62,6 @@ public abstract class Game {
 	}
 
 	public String boardToString() {
-		StringBuilder boardString = new StringBuilder(board.getSize() * board.getSize() - 1);
-		for (int i = 0; i < board.getSize(); i++) {
-			for (int j = 0; j < board.getSize(); j++) {
-				boardString.append(pointToChar(board.getBoardMatrix()[i][j]));
-			}
-		}
-		return boardString.toString();
-	}
-
-	public Character pointToChar(Point point) {
-		if (point.getState() == PointState.FREE || point.getState() == PointState.CONQUERED) {
-			return 'U';
-		} else if (point.getColor() == StoneColor.BLACK) {
-			return 'B';
-		} else {
-			return 'W';
-		}
+		return board.toString();
 	}
 }

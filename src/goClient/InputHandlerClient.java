@@ -19,6 +19,7 @@ public class InputHandlerClient extends InputHandler {
 	public InputHandlerClient(GoClientTUI tuiArg, OutputStream out) throws IOException, ConnectionLostException {
 		writer = new ClientWriter(out);
 		tui = tuiArg;
+		player = tui.choosePlayer(queue, writer);
 	}
 
 	@Override
@@ -29,7 +30,8 @@ public class InputHandlerClient extends InputHandler {
 			case ProtocolMessages.GAME:
 				char color = inputArguments[2].charAt(0);
 				tui.showMessage("Game will start, your color is " + color);
-				game = new ClientGame(19, color, this, tui.choosePlayer(stringToStoneColor(color), queue, writer));
+				player.setColor(stringToStoneColor(color));
+				game = new ClientGame(5, color, this, player);
 				break;
 			case ProtocolMessages.TURN:
 				tui.showMessage("Its your turn!");

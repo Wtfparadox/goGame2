@@ -8,7 +8,6 @@ import observers.ObservableBoard;
 
 public class Board implements ObservableBoard {
 
-	// NEEDS REVISION
 	public int dim;
 	private int[] neighbors;
 	private Point[][] boardMatrix;
@@ -146,7 +145,7 @@ public class Board implements ObservableBoard {
 	}
 
 	public String toString() {
-		StringBuilder boardString = new StringBuilder(dim * dim - 1);
+		StringBuilder boardString = new StringBuilder(dim * dim);
 		for (int i = 0; i < dim; i++) {
 			for (int j = 0; j < dim; j++) {
 				boardString.append(pointToChar(boardMatrix[i][j]));
