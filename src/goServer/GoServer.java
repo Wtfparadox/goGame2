@@ -68,10 +68,13 @@ public class GoServer implements Runnable {
 		int index = connectedClients;
 		if (index % 2 != 0) {
 			gameList.add(new ServerGame(5));
-			index--;
+			// System.out.println(index);
 		} else {
-			index = index - 2;
+
 		}
+
+		index = (index - 1) / 2;
+		System.out.println(index);
 		System.out.println(connectedClients);
 		GoClientHandler handler = new GoClientHandler(sock, gameList.get(index), this);
 		new Thread(handler).start();
