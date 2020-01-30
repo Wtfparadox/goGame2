@@ -7,7 +7,6 @@ import goBoard.StoneColor;
 import goExceptions.ConnectionLostException;
 import goExceptions.EndOfGameException;
 import goGame.ClientGame;
-import goPlayers.HumanPlayer;
 import goProtocol.ProtocolMessages;
 import goServerClientCommunication.InputHandler;
 
@@ -28,20 +27,21 @@ public class InputHandlerClient extends InputHandler {
 		if (inputArguments.length > 0) {
 			switch (input.charAt(0)) {
 			case ProtocolMessages.GAME:
-				tui.showMessage("game start");
 				char color = inputArguments[2].charAt(0);
-				game = new ClientGame(5, color, this,
-						new HumanPlayer("Thomas", stringToStoneColor(color), queue, writer));
+				tui.showMessage("Game will start, your color is " + color);
+				game = new ClientGame(19, color, this, tui.choosePlayer(stringToStoneColor(color), queue, writer));
 				break;
 			case ProtocolMessages.TURN:
 				tui.showMessage("Its your turn!");
+				System.out.println(input);
 				processTurn(inputArguments[2]);
 				break;
 			case ProtocolMessages.RESULT:
-				tui.showMessage(inputArguments[0]);
+				System.out.println(input);
+				processResult(inputArguments[1].charAt(0));
 				break;
 			case ProtocolMessages.END:
-				tui.showMessage(inputArguments[0]);
+				processEndOfGame(inputArguments);
 				throw new EndOfGameException("The game has ended because " + inputArguments[0]);
 			}
 		} else {
@@ -49,8 +49,27 @@ public class InputHandlerClient extends InputHandler {
 		}
 	}
 
+	private void processEndOfGame(String[] input) {
+		if (input[1].charAt(0) == ProtocolMessages.FINISHED) {
+			tui.showMessage("The winner is " + input[2]);
+			tui.showMessage("White score: " + input[3]);
+			tui.showMessage("Black score: " + input[4]);
+		} else {
+			tui.showMessage("You win because the other player has failed at making a valid move");
+		}
+	}
+
+	private void processResult(char result) throws EndOfGameException {
+		if (result == ProtocolMessages.VALID) {
+			tui.showMessage("The server has validated your move");
+		} else {
+			tui.showMessage("Your move is invalid! You lost");
+			throw new EndOfGameException("Game has ended because your move was invalid");
+		}
+	}
+
 	private void processTurn(String input) throws ConnectionLostException {
-		if (!input.contentEquals(Character.toString(ProtocolMessages.PASS)) && input != null) {
+		if (!input.contentEquals(Character.toString(ProtocolMessages.PASS)) && (Object) input != null) {
 			game.processOpponentsMove(Integer.parseInt(input));
 		}
 		game.giveTurn();

@@ -15,7 +15,7 @@ public class ClientGame extends Game {
 		super(boardDimension);
 		this.player = player;
 		handler.setPlayer(player);
-		initGame(5);
+		initGame(boardDimension);
 	}
 
 	private void initGame(int dim) {

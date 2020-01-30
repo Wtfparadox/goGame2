@@ -9,7 +9,7 @@ import goBoard.Board;
 import goBoard.StoneColor;
 import goRulesImplementation.CaptureReferee;
 
-class CapturedRefV2Test {
+class CaptureRefereeTest {
 	private CaptureReferee ref;
 	private Board board;
 	private StoneColor b;
@@ -34,7 +34,8 @@ class CapturedRefV2Test {
 
 		board.placeStone(2, 2, StoneColor.WHITE);
 
-		assertEquals(1, ref.getStoneList(12).size());
+		ref.markPointsForRemoval(11);
+		assertEquals(1, ref.getStoneList(11).size());
 
 	}
 
@@ -48,12 +49,8 @@ class CapturedRefV2Test {
 		board.placeStone(2, 0, b);
 		board.placeStone(1, 1, b);
 
-		for (Integer i : ref.getStoneList()) {
-			System.out.println(board.getPointFromIndex(i).getColor());
-		}
-		System.out.println("");
-
-		assertEquals(3, ref.getStoneList().size());
+		ref.markPointsForRemoval(2);
+		assertEquals(3, ref.getStoneList(2).size());
 
 	}
 
@@ -77,7 +74,8 @@ class CapturedRefV2Test {
 		board.placeStone(3, 4, w);
 		board.placeStone(4, 4, w);
 
-		assertEquals(4, ref.getStoneList().size());
+		ref.markPointsForRemoval(11);
+		assertEquals(4, ref.getStoneList(11).size());
 
 	}
 
@@ -100,11 +98,8 @@ class CapturedRefV2Test {
 		board.placeStone(3, 4, w);
 		board.placeStone(4, 4, w);
 
-		for (Integer i : ref.getStoneList()) {
-			System.out.println(board.getPointFromIndex(i).getColor());
-		}
-
-		assertEquals(0, ref.getStoneList().size());
+		ref.markPointsForRemoval(12);
+		assertEquals(0, ref.getStoneList(12).size());
 	}
 
 	@Test
@@ -137,12 +132,8 @@ class CapturedRefV2Test {
 		board.placeStone(4, 3, b);
 		board.placeStone(4, 4, b);
 
-		for (Integer i : ref.getStoneList()) {
-			System.out.println(board.getPointFromIndex(i).getColor());
-		}
-		System.out.println("");
-
-		assertEquals(8, ref.getStoneList().size());
+		ref.markPointsForRemoval(12);
+		assertEquals(8, ref.getStoneList(12).size());
 	}
 
 	@Test
@@ -153,12 +144,8 @@ class CapturedRefV2Test {
 
 		board.placeStone(4, 4, w);
 
-		for (Integer i : ref.getLibertyList()) {
-			System.out.println(board.getPointFromIndex(i).getColor());
-		}
-		System.out.println("");
-
-		assertEquals(3, ref.getLibertyList().size());
+		ref.markPointsForRemoval(2);
+		assertEquals(3, ref.getLibertyList(2).size());
 	}
 
 	@Test
@@ -175,17 +162,17 @@ class CapturedRefV2Test {
 		board.placeStoneFromIndex(13, b);
 
 		ref.markPointsForRemoval(5);
-		assertEquals(2, ref.getLibertyList().size());
-		assertEquals(0, ref.getStoneList().size());
+		assertEquals(2, ref.getLibertyList(5).size());
+		assertEquals(0, ref.getStoneList(5).size());
 
 		ref.markPointsForRemoval(12);
 
-		assertEquals(15, ref.getLibertyList().size());
+		assertEquals(15, ref.getLibertyList(12).size());
 
 		board.placeStoneFromIndex(20, w);
 
 		ref.markPointsForRemoval(12);
-		assertEquals(2, ref.getLibertyList().size());
+		assertEquals(2, ref.getLibertyList(12).size());
 	}
 
 	@Test
@@ -200,7 +187,7 @@ class CapturedRefV2Test {
 
 		ref.markPointsForRemoval(6);
 
-		assertEquals(6, ref.getLibertyList().size());
+		assertEquals(6, ref.getLibertyList(6).size());
 
 	}
 
@@ -222,8 +209,8 @@ class CapturedRefV2Test {
 
 		ref.markPointsForRemoval(18);
 
-		assertEquals(9, ref.getLibertyList().size());
-		assertEquals(1, ref.getStoneList().size());
+		assertEquals(9, ref.getLibertyList(18).size());
+		assertEquals(1, ref.getStoneList(18).size());
 
 	}
 

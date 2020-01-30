@@ -7,7 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import goBoard.Board;
-import goBoard.Point;
 
 class BoardTest {
 
@@ -16,30 +15,6 @@ class BoardTest {
 	@BeforeEach
 	void setUp() throws Exception {
 		board = new Board(5);
-	}
-
-	@Test
-	void testCorners() {
-		Point[][] testMatrix = board.getBoardMatrix();
-		assertTrue(testMatrix[0][0].getCorner());
-		assertTrue(testMatrix[0][board.getSize() - 1].getCorner());
-		assertTrue(testMatrix[board.getSize() - 1][0].getCorner());
-		assertTrue(testMatrix[board.getSize() - 1][testMatrix.length - 1].getCorner());
-
-		assertFalse(testMatrix[3][3].getCorner());
-		assertFalse(testMatrix[0][3].getCorner());
-	}
-
-	@Test
-	void testEdges() {
-		Point[][] testMatrix = board.getBoardMatrix();
-		assertTrue(testMatrix[0][2].getEdge());
-		assertTrue(testMatrix[0][board.getSize() - 2].getEdge());
-		assertTrue(testMatrix[board.getSize() - 1][board.getSize() - 2].getEdge());
-		assertTrue(testMatrix[board.getSize() - 2][board.getSize() - 1].getEdge());
-
-		assertFalse(testMatrix[3][3].getEdge());
-		assertFalse(testMatrix[1][2].getEdge());
 	}
 
 	@Test

@@ -27,9 +27,9 @@ public class GTG implements BoardWatcher {
 			for (int j = 0; j < board.length; j++) {
 				Point p = board[i][j];
 				if (p.getState() == PointState.OCCUPIED) {
-					gogui.addStone(i, j, (p.getColor().equals(StoneColor.WHITE)));
+					gogui.addStone(j, i, (p.getColor().equals(StoneColor.WHITE)));
 				} else if (p.getState() == PointState.CONQUERED) {
-					gogui.addAreaIndicator(i, j, (p.getColor().equals(StoneColor.WHITE)));
+					gogui.addAreaIndicator(j, i, (p.getColor().equals(StoneColor.WHITE)));
 				}
 			}
 		}

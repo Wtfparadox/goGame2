@@ -3,8 +3,6 @@ package goBoard;
 public class Point {
 	private PointState state;
 	private StoneColor color;
-	private boolean isEdge;
-	private boolean isCorner;
 
 	public Point() {
 		state = PointState.FREE;
@@ -25,22 +23,6 @@ public class Point {
 
 	public StoneColor getColor() {
 		return color;
-	}
-
-	public void setEdge() {
-		this.isEdge = true;
-	}
-
-	public boolean getEdge() {
-		return isEdge;
-	}
-
-	public void setCorner() {
-		this.isCorner = true;
-	}
-
-	public boolean getCorner() {
-		return isCorner;
 	}
 
 	public boolean isIdentical(Point point) {

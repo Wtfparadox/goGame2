@@ -22,7 +22,7 @@ public class InputHandlerServer extends InputHandler {
 	}
 
 	@Override
-	protected void handleInput(String input)
+	protected synchronized void handleInput(String input)
 			throws ExitProgram, EndOfGameException, IOException, ConnectionLostException {
 		String[] inputArguments = input.split(ProtocolMessages.DELIMITER);
 		if (inputArguments.length > 0) {

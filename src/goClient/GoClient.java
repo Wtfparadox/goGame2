@@ -60,7 +60,7 @@ public class GoClient {
 		int port = -1;
 		while (sock == null) {
 			try {
-				host = InetAddress.getByName("localhost");// tui.getIp();
+				host = tui.getIp();
 				port = 8888;// tui.getInt("Please enter a port number.");
 			} catch (IOException e) {
 				e.printStackTrace();

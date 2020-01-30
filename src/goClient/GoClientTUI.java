@@ -5,6 +5,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Queue;
+
+import goBoard.StoneColor;
+import goPlayers.ComputerPlayer;
+import goPlayers.FreeFieldStrategy;
+import goPlayers.HumanPlayer;
+import goPlayers.Player;
 
 public class GoClientTUI {
 	private BufferedReader in;
@@ -51,6 +58,19 @@ public class GoClientTUI {
 			}
 		}
 		return color;
+	}
+
+	public Player choosePlayer(StoneColor color, Queue<String> queue, ClientWriter writer) throws IOException {
+		String input = getString("Choose a player type: ");
+		while (!(input.contentEquals("C")) && !(input.contentEquals("H"))) {
+			System.out.println("[C]omputer or [H]uman");
+			input = in.readLine();
+		}
+		if (input.contentEquals("C")) {
+			return new ComputerPlayer("Thomas", color, new FreeFieldStrategy(), queue, writer);
+		} else {
+			return new HumanPlayer("Thomas", color, queue, writer);
+		}
 	}
 
 	public boolean getBoolean(String question) {

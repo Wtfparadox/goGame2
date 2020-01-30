@@ -37,33 +37,12 @@ public class Board implements ObservableBoard {
 		return copyBoard;
 	}
 
-	public Point[] buildEdgeRow() {
-		Point[] edge = new Point[boardMatrix.length];
-		for (int a = 0; a < boardMatrix.length; a++) {
-			edge[a] = new Point();
-			edge[a].setEdge();
-		}
-		edge[0].setCorner();
-		edge[boardMatrix.length - 1].setCorner();
-		return edge;
-	}
-
-	public Point[] buildRow() {
-		Point[] edge = new Point[boardMatrix.length];
-		for (int a = 0; a < boardMatrix.length; a++) {
-			edge[a] = new Point();
-		}
-		edge[0].setEdge();
-		edge[boardMatrix.length - 1].setEdge();
-		return edge;
-	}
-
 	public void initializeBoard() {
-		for (int i = 1; i < boardMatrix.length - 1; i++) {
-			boardMatrix[i] = buildRow();
+		for (int i = 0; i < boardMatrix.length; i++) {
+			for (int j = 0; j < boardMatrix.length; j++) {
+				boardMatrix[i][j] = new Point();
+			}
 		}
-		boardMatrix[0] = buildEdgeRow();
-		boardMatrix[boardMatrix.length - 1] = buildEdgeRow();
 	}
 
 	public void placeStone(int row, int col, StoneColor c) {
