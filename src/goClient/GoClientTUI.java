@@ -44,7 +44,13 @@ public class GoClientTUI {
 
 	public int getInt(String question) throws IOException {
 		showMessage(question);
-		return Integer.parseInt(in.readLine());
+		while (true) {
+			try {
+				return Integer.parseInt(in.readLine());
+			} catch (NumberFormatException e) {
+				System.out.println("Please enter a valid integer");
+			}
+		}
 	}
 
 	public String getColor() throws IOException {
@@ -60,14 +66,16 @@ public class GoClientTUI {
 	}
 
 	public Player choosePlayer(Queue<String> queue, ClientWriter writer) throws IOException {
-		String input = getString("Choose a player type: ");
+		String input = getString("Choose a player type: [C]omputer or [H]uman");
 		while (!(input.contentEquals("C")) && !(input.contentEquals("H"))) {
-			System.out.println("[C]omputer or [H]uman");
+			System.out.println("Invalid choice, please choose: [C]omputer or [H]uman");
 			input = in.readLine();
 		}
 		if (input.contentEquals("C")) {
+			System.out.println("You chose: Computer Player");
 			return new ComputerPlayer("Thomas", new FreeFieldStrategy(), queue, writer);
 		} else {
+			System.out.println("You chose: Human Player");
 			return new HumanPlayer("Thomas", queue, writer);
 		}
 	}

@@ -18,7 +18,13 @@ public class GoServerTUI {
 
 	public int getInt(String question) throws IOException {
 		showMessage(question);
-		return Integer.parseInt(in.readLine());
+		while (true) {
+			try {
+				return Integer.parseInt(in.readLine());
+			} catch (NumberFormatException e) {
+				System.out.println("Please enter a valid number");
+			}
+		}
 	}
 
 	public String getString(String question) throws IOException {

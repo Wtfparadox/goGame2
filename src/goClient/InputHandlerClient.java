@@ -35,16 +35,14 @@ public class InputHandlerClient extends InputHandler {
 				break;
 			case ProtocolMessages.TURN:
 				tui.showMessage("Its your turn!");
-				System.out.println(input);
 				processTurn(inputArguments[2]);
 				break;
 			case ProtocolMessages.RESULT:
-				System.out.println(input);
 				processResult(inputArguments[1].charAt(0));
 				break;
 			case ProtocolMessages.END:
 				processEndOfGame(inputArguments);
-				throw new EndOfGameException("The game has ended because " + inputArguments[0]);
+				throw new EndOfGameException("The game has ended");
 			}
 		} else {
 			tui.showMessage("Message not defined in protocol, command unknown.");
@@ -78,11 +76,10 @@ public class InputHandlerClient extends InputHandler {
 	}
 
 	public void makeHandShake() throws IOException, ConnectionLostException {
-//		int version = tui.getInt("Which protocol version do you prefer?");
-//		String name = tui.getString("What is your name?");
-//		String color = tui.getColor();
-//		writer.doHandshake(version, name, color);
-		writer.doHandshake(1, "w", "w");
+		int version = tui.getInt("Which protocol version do you prefer?");
+		String name = tui.getString("What is your name?");
+		String color = tui.getColor();
+		writer.doHandshake(version, name, color);
 	}
 
 	private StoneColor stringToStoneColor(char color) {
